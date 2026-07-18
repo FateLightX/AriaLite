@@ -4,39 +4,72 @@
 
 ```bash
 export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
+git status -sb
 swift build --disable-sandbox
-swift test
+swift test --disable-sandbox
 ```
 
-Read `docs/AriaLite-Design.md` for scope vs AriaFlow.
+Then read:
 
-## Facts
+1. `docs/ARCHITECTURE.md` — modules, data flow, connection model
+2. `CHANGELOG.md` — user-visible behavior
+3. The source file you are about to change
 
-- SwiftPM macOS app, SwiftUI, macOS 14+, Simplified Chinese UI.
-- No third-party Swift dependencies.
-- Bundled aria2-next 2.5.1 engines under `Sources/AriaLite/Resources/`.
-- `AppSettings.rpcHost` allows remote RPC; local hosts still launch the bundled engine.
-- No torrent import UI, history library, peer blocklist, or Dock progress.
+Code and tests are authoritative.
+
+## Project Facts
+
+- SwiftPM macOS app, SwiftUI + AppKit, macOS 14+, Simplified Chinese UI
+- No third-party Swift dependencies
+- Bundle ID `com.arialite.desktop`, app version `0.1.0`
+- Main window fixed `600×400` (`.windowResizability(.contentSize)`)
+- Bundled aria2-next 2.5.1 under `Sources/AriaLite/Resources/`
+- `AppSettings.rpcHost` allows remote RPC; only local hosts start the managed engine
+- No torrent UI, history, peer blocklist, or Dock progress
 
 ## Ownership
 
-- `AriaLiteApp.swift`, `AppDelegate.swift`, `AppPresentation.swift`: scenes / lifecycle.
-- `Views.swift`, `MenuBarViews.swift`: UI only.
-- `Models.swift`: `AppStore`, persistence, orchestration.
-- `Aria2Client.swift`: JSON-RPC.
-- `EngineManager.swift`: process discovery / launch / stop.
-- `scripts/package_app.sh`: `.app` packaging.
+| Area | Files |
+| --- | --- |
+| Scenes / lifecycle | `AriaLiteApp.swift`, `AppDelegate.swift`, `AppPresentation.swift` |
+| UI only | `Views.swift`, `MenuBarViews.swift` |
+| State / orchestration | `Models.swift` |
+| RPC | `Aria2Client.swift` |
+| Process | `EngineManager.swift` |
+| Packaging | `scripts/` |
+
+## Invariants
+
+- Keep `AppStore` on `@MainActor`; keep JSON-RPC details out of views
+- New `AppSettings` fields must use `decodeIfPresent` defaults
+- Never force-shutdown a remote RPC host
+- Do not commit `dist/`, `.build/`, local app data, or RPC secrets
+- Sidecar replacement requires checksums + `THIRD_PARTY_NOTICES.md` update
 
 ## Verification
 
 ```bash
 export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
 swift test --disable-sandbox
-scripts/package_app.sh
-scripts/smoke_sidecar_download.sh
-scripts/smoke_app_engine.sh
-# or the full gate:
 scripts/verify_release.sh
 ```
 
-Do not commit `dist/`, `.build/`, local app data, or RPC secrets.
+Expected artifacts:
+
+```text
+dist/AriaLite.app
+dist/AriaLite-0.1.0.zip
+dist/AriaLite-0.1.0.zip.sha256
+```
+
+## Documentation Map
+
+| Doc | Purpose |
+| --- | --- |
+| `README.md` | Users: install, build, feature summary |
+| `docs/ARCHITECTURE.md` | Modules and runtime design |
+| `docs/SIDECAR.md` | Engine binaries and launch contract |
+| `docs/RELEASE_CHECKLIST.md` | Release gate |
+| `CHANGELOG.md` | Version history |
+| `THIRD_PARTY_NOTICES.md` | GPL sidecar provenance |
+| `AGENTS.md` | This file |
