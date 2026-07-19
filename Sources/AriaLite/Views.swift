@@ -1017,7 +1017,7 @@ struct SettingsWindowView: View {
 
                 toggleRow("启动时进入菜单栏", isOn: launchInMenuBarBinding)
                 toggleRow("关闭主窗口后继续运行", isOn: $store.settings.keepRunningAfterMainWindowClose)
-                toggleRow("菜单栏运行时隐藏 Dock 图标", isOn: hideDockIconBinding)
+                toggleRow("隐藏 Dock 图标", isOn: hideDockIconBinding)
                     .disabled(!canRunInMenuBar)
             }
 
@@ -1248,7 +1248,7 @@ struct SettingsWindowView: View {
     }
 
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1.2"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1.3"
     }
 
     private var ariaLiteRepositoryURL: URL {

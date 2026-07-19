@@ -2,6 +2,13 @@
 
 All notable changes to AriaLite are documented in this file.
 
+## 0.1.3 - 2026-07-19
+
+### Changed
+
+- When “隐藏 Dock 图标” is on, the Dock stays hidden even while main/settings windows are open.
+- Settings toggle label simplified to “隐藏 Dock 图标”.
+
 ## 0.1.2 - 2026-07-19
 
 ### Changed

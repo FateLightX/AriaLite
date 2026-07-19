@@ -22,11 +22,11 @@ struct AriaLiteMenuBarLabel: View {
             didBootstrap = true
 
             appDelegate.configure(store: store) {
-                AppPresentation.showMainWindow(using: openWindow)
+                AppPresentation.showMainWindow(using: openWindow, store: store)
             }
 
             if store.settings.showMainWindowOnLaunch {
-                AppPresentation.showMainWindow(using: openWindow)
+                AppPresentation.showMainWindow(using: openWindow, store: store)
             } else {
                 AppPresentation.updateActivationPolicy(store: store)
             }
@@ -53,7 +53,7 @@ struct AriaLiteMenuBarView: View {
         .disabled(store.connectionState != .connected)
 
         Button("设置...") {
-            AppPresentation.showSettings(using: openSettings)
+            AppPresentation.showSettings(using: openSettings, store: store)
         }
 
         Divider()
@@ -99,6 +99,6 @@ struct AriaLiteMenuBarView: View {
     }
 
     private func showMainWindow() {
-        AppPresentation.showMainWindow(using: openWindow)
+        AppPresentation.showMainWindow(using: openWindow, store: store)
     }
 }

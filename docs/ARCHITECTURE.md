@@ -25,7 +25,7 @@ SwiftUI views / menu bar
 | --- | --- |
 | `AriaLiteApp.swift` | Scenes, commands, fixed main-window size `600×400` |
 | `AppDelegate.swift` | Lifecycle, magnet URL open, status-item click → main window |
-| `AppPresentation.swift` | Activation policy; main / settings window visibility |
+| `AppPresentation.swift` | Activation policy; main / settings window visibility; with hide-Dock enabled stays `.accessory` while windows are open |
 | `Views.swift` | Main window, filter tabs, task list, sheets, settings |
 | `MenuBarViews.swift` | Menu bar label, menu actions, startup bootstrap |
 | `Models.swift` | `AppStore`, `AppSettings`, tasks, orchestration |
@@ -108,4 +108,4 @@ Settings draft → `setRPCHost` on commit → reconnect (no local engine for non
 | `scripts/smoke_app_engine.sh` | Packaged app launches managed engine + download |
 | `scripts/verify_release.sh` | Tests → package → layout/sign/checksum → smokes |
 
-Bundle ID: `com.arialite.desktop`. Version: `0.1.2`.
+Bundle ID: `com.arialite.desktop`. Version: `0.1.3`.

@@ -6,9 +6,9 @@ enum AppPresentation {
     private static var mainWindowPresentationRequested = false
     private static var ignoreMainWindowDisappearUntil: Date?
 
-    static func showMainWindow(using openWindow: OpenWindowAction) {
+    static func showMainWindow(using openWindow: OpenWindowAction, store: AppStore) {
         mainWindowPresentationRequested = true
-        prepareForWindowPresentation()
+        prepareForWindowPresentation(store: store)
         openWindow(id: "main")
         activateOnNextRunLoop()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -16,8 +16,8 @@ enum AppPresentation {
         }
     }
 
-    static func showSettings(using openSettings: OpenSettingsAction) {
-        prepareForWindowPresentation()
+    static func showSettings(using openSettings: OpenSettingsAction, store: AppStore) {
+        prepareForWindowPresentation(store: store)
         openSettings()
         activateOnNextRunLoop()
     }
@@ -35,7 +35,7 @@ enum AppPresentation {
         }
 
         mainWindowPresentationRequested = false
-        prepareForWindowPresentation()
+        prepareForWindowPresentation(store: store)
     }
 
     static func mainWindowDidDisappear(store: AppStore) {
@@ -54,8 +54,8 @@ enum AppPresentation {
         }
     }
 
-    static func settingsDidAppear() {
-        prepareForWindowPresentation()
+    static func settingsDidAppear(store: AppStore) {
+        prepareForWindowPresentation(store: store)
         activateOnNextRunLoop()
     }
 
@@ -66,28 +66,21 @@ enum AppPresentation {
     }
 
     static func updateActivationPolicy(store: AppStore) {
-        let shouldHideDock = store.settings.hideDockIconInMenuBarMode && !hasVisibleAppWindow
+        // Keep dock hidden while windows are open when the setting is enabled.
+        let shouldHideDock = store.settings.hideDockIconInMenuBarMode
         let targetPolicy: NSApplication.ActivationPolicy = shouldHideDock ? .accessory : .regular
         if NSApp.activationPolicy() != targetPolicy {
             NSApp.setActivationPolicy(targetPolicy)
         }
     }
 
-    private static func prepareForWindowPresentation() {
-        if NSApp.activationPolicy() != .regular {
-            NSApp.setActivationPolicy(.regular)
-        }
+    private static func prepareForWindowPresentation(store: AppStore) {
+        updateActivationPolicy(store: store)
     }
 
     private static func activateOnNextRunLoop() {
         DispatchQueue.main.async {
             NSApp.activate(ignoringOtherApps: true)
-        }
-    }
-
-    private static var hasVisibleAppWindow: Bool {
-        NSApp.windows.contains { window in
-            (window.isVisible || window.isMiniaturized) && window.canBecomeMain
         }
     }
 }
