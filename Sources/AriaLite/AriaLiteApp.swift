@@ -107,7 +107,6 @@ struct AriaLiteApp: App {
         Settings {
             SettingsWindowView()
                 .environmentObject(store)
-                .frame(width: 400, height: 360)
                 .onAppear {
                     AppPresentation.settingsDidAppear()
                 }

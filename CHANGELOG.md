@@ -2,6 +2,12 @@
 
 All notable changes to AriaLite are documented in this file.
 
+## 0.1.1 - 2026-07-19
+
+### Changed
+
+- Settings window height now fits each tab's content (no scrollbar / fixed 360 height).
+
 ## 0.1.0 - 2026-07-19
 
 ### Added

@@ -12,52 +12,26 @@
 
 ## 中文
 
-AriaLite 是 [AriaFlow](https://github.com/FateLightX/AriaFlow) 的轻量 macOS 下载客户端：URL / magnet 下载、内嵌 aria2-next、菜单栏速度、可配置远程 RPC。
+[AriaFlow](https://github.com/FateLightX/AriaFlow) 的轻量 macOS 下载客户端：URL / magnet、内嵌 aria2-next、菜单栏速度、可配置远程 RPC。
 
-### 功能
-
-- 下载队列：添加、暂停/继续、删除、在 Finder 中显示、复制链接
-- 顶部筛选栏（全部 / 下载中 / 等待中 / 已完成 / 已失败）、搜索、排序
-- 菜单栏速度显示
+- 队列：添加、暂停/继续、删除、Finder 显示、复制链接
+- 顶部筛选、搜索、排序；菜单栏速度
 - 内嵌 Aria2 Next 2.5.1（Apple Silicon + Intel）
-- 可配置 RPC 地址 / 端口 / Secret（本机自动启动引擎，远程只连接 RPC）
-- 固定主窗口 600×400
-- 无 Torrent 文件选择、无历史库、无 Peer Blocklist、无 Dock 进度
+- 可配置 RPC 地址 / 端口 / Secret（本机启引擎，远程只连 RPC）
+- 固定主窗口 600×400；无 Torrent 选择、历史、Blocklist、Dock 进度
 
-### 系统要求
+**要求：** macOS 14+（macOS 26 启用 Liquid Glass）；源码构建需 Xcode 26 / Swift 6.2。
 
-- macOS 14 或更高版本；macOS 26 会启用 Liquid Glass 效果
-- 源码构建需要 Xcode 26 或兼容的 Swift 6.2 工具链
-
-### 下载与安装
-
-从 [Releases](https://github.com/FateLightX/AriaLite/releases) 下载 `AriaLite-*.zip` 和对应 `.sha256`。当前构建为 ad-hoc 签名，未经过 Apple 公证。首次打开若被 Gatekeeper 拦截：在 Finder 中按住 Control 点击 `AriaLite.app` →「打开」。
-
-```bash
-shasum -a 256 -c AriaLite-0.1.0.zip.sha256
-unzip AriaLite-0.1.0.zip
-# 将 AriaLite.app 拖入「应用程序」
-```
-
-### 从源码构建
+**安装：** 从 [Releases](https://github.com/FateLightX/AriaLite/releases) 下载 ZIP 与 `.sha256`。ad-hoc 签名、未公证；Gatekeeper 拦截时 Control-点击 `AriaLite.app` → 打开。
 
 ```bash
 export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
 swift build --disable-sandbox
 scripts/package_app.sh
-open dist/AriaLite.app
-```
-
-完整门禁：
-
-```bash
-export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
 scripts/verify_release.sh
 ```
 
-产物：`dist/AriaLite.app`、`dist/AriaLite-0.1.0.zip`、`.sha256`。
-
-### 与 AriaFlow
+产物：`dist/AriaLite.app`、`dist/AriaLite-<version>.zip` 及校验文件。
 
 | | AriaFlow | AriaLite |
 |---|---|---|
@@ -69,27 +43,17 @@ scripts/verify_release.sh
 
 ## English
 
-AriaLite is a lightweight macOS download client derived from [AriaFlow](https://github.com/FateLightX/AriaFlow).
+Lightweight macOS download client from [AriaFlow](https://github.com/FateLightX/AriaFlow): URL/magnet, bundled aria2-next, menu bar speed, configurable remote RPC.
 
-### Highlights
-
-- Download queue: add, pause/resume, delete, Reveal in Finder, copy link
-- Top filter bar, search, sort, menu bar speed
-- Bundled Aria2 Next 2.5.1 (Apple Silicon + Intel)
+- Queue: add, pause/resume, delete, Reveal in Finder, copy link
+- Top filters, search, sort; menu bar speed
+- Aria2 Next 2.5.1 (Apple Silicon + Intel)
 - Configurable RPC host / port / secret (remote is connect-only)
-- Fixed main window 600×400
-- No torrent picker, history, peer blocklist, or Dock progress
+- Fixed 600×400 window; no torrent picker, history, blocklist, or Dock progress
 
-### Requirements
+**Requirements:** macOS 14+; Xcode 26 / Swift 6.2 to build.
 
-- macOS 14+
-- Xcode 26 / Swift 6.2 to build from source
-
-### Install
-
-Download from [Releases](https://github.com/FateLightX/AriaLite/releases). Builds are ad-hoc signed (not notarized); Gatekeeper may require Control-click → Open.
-
-### Build and verify
+**Install:** Download from [Releases](https://github.com/FateLightX/AriaLite/releases). Ad-hoc signed, not notarized; Control-click → Open if Gatekeeper blocks.
 
 ```bash
 export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
@@ -98,15 +62,8 @@ scripts/verify_release.sh
 
 ## Docs
 
-| Document | Contents |
-| --- | --- |
-| [Architecture](docs/ARCHITECTURE.md) | Modules, data flow, connection model |
-| [Sidecar](docs/SIDECAR.md) | Bundled engine contract |
-| [Release checklist](docs/RELEASE_CHECKLIST.md) | Ship gate |
-| [Changelog](CHANGELOG.md) | Version history |
-| [Agent context](AGENTS.md) | Contributor / AI recovery notes |
-| [Third-party notices](THIRD_PARTY_NOTICES.md) | aria2-next GPL provenance |
+[Architecture](docs/ARCHITECTURE.md) · [Sidecar](docs/SIDECAR.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Changelog](CHANGELOG.md) · [AGENTS.md](AGENTS.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
 
-## Licensing
+## License
 
-AriaLite source is [MIT](LICENSE). Bundled `aria2-next` is GPL-2.0; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+AriaLite is [MIT](LICENSE). Bundled `aria2-next` is GPL-2.0; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

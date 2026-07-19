@@ -955,16 +955,20 @@ struct SettingsWindowView: View {
                     settingsDetail(for: category)
                 }
                 .formStyle(.grouped)
+                .scrollDisabled(true)
                 .contentMargins(.top, 8, for: .scrollContent)
                 .contentMargins(.horizontal, 20, for: .scrollContent)
                 .contentMargins(.bottom, 8, for: .scrollContent)
+                .frame(maxWidth: .infinity, alignment: .top)
+                .fixedSize(horizontal: false, vertical: true)
                 .tabItem {
                     Label(category.title, systemImage: category.symbol)
                 }
                 .tag(category)
             }
         }
-        .frame(width: 400, height: 360)
+        .frame(width: 400)
+        .fixedSize(horizontal: false, vertical: true)
         .onAppear {
             rpcHostDraft = store.settings.rpcHost
         }
@@ -1225,7 +1229,7 @@ struct SettingsWindowView: View {
     }
 
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1.0"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1.1"
     }
 
     private var ariaFlowRepositoryURL: URL {

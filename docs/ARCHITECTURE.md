@@ -108,4 +108,4 @@ Settings draft → `setRPCHost` on commit → reconnect (no local engine for non
 | `scripts/smoke_app_engine.sh` | Packaged app launches managed engine + download |
 | `scripts/verify_release.sh` | Tests → package → layout/sign/checksum → smokes |
 
-Bundle ID: `com.arialite.desktop`. Version: `0.1.0`.
+Bundle ID: `com.arialite.desktop`. Version: `0.1.1`.
