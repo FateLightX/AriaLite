@@ -71,6 +71,6 @@ dist/AriaLite-0.1.4.zip.sha256
 | `docs/SIDECAR.md` | Engine binaries and launch contract |
 | `docs/RELEASE_CHECKLIST.md` | Release gate |
 | `CHANGELOG.md` | Version history |
-| `docs/OPTIMIZATION_EXECUTION.md` | Optimization batch notes |
+| `docs/OPTIMIZATION.md` | 0.1.4 optimization track notes |
 | `THIRD_PARTY_NOTICES.md` | GPL sidecar provenance |
 | `AGENTS.md` | This file |
