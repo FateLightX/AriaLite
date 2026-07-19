@@ -26,9 +26,15 @@ SwiftUI views / menu bar
 | `AriaLiteApp.swift` | Scenes, commands, fixed main-window size `600×400` |
 | `AppDelegate.swift` | Lifecycle, magnet URL open, status-item click → main window |
 | `AppPresentation.swift` | Activation policy; main / settings window visibility; with hide-Dock enabled stays `.accessory` while windows are open |
-| `Views.swift` | Main window, filter tabs, task list, sheets, settings |
+| `MainWindowViews.swift` | Main window chrome, filter tabs, content shell |
+| `TaskListViews.swift` | Task list, rows, connection empty states, status bar |
+| `AddTaskSheet.swift` / `DeleteConfirmationSheet.swift` | Modal flows |
+| `SettingsViews.swift` | Settings tabs and about |
 | `MenuBarViews.swift` | Menu bar label, menu actions, startup bootstrap |
-| `Models.swift` | `AppStore`, `AppSettings`, tasks, orchestration |
+| `Persistence.swift` | Application Support paths, JSON and RPC secret storage |
+| `TaskModels.swift` | Task/filter/status models |
+| `AppSettings.swift` | Persisted preferences (includes `rpcHost`) |
+| `AppStore.swift` | Application orchestration and RPC/engine state |
 | `Aria2Client.swift` | Typed JSON-RPC transport |
 | `EngineManager.swift` | Engine discovery, launch, stop, log tail |
 | `NotificationService.swift` | Download complete / fail / start notifications |

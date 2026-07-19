@@ -32,8 +32,8 @@ Code and tests are authoritative.
 | Area | Files |
 | --- | --- |
 | Scenes / lifecycle | `AriaLiteApp.swift`, `AppDelegate.swift`, `AppPresentation.swift` |
-| UI only | `Views.swift`, `MenuBarViews.swift` |
-| State / orchestration | `Models.swift` |
+| UI only | `MainWindowViews.swift`, `TaskListViews.swift`, sheets, `SettingsViews.swift`, `MenuBarViews.swift` |
+| State / orchestration | `Persistence.swift`, `TaskModels.swift`, `AppSettings.swift`, `AppStore.swift` |
 | RPC | `Aria2Client.swift` |
 | Process | `EngineManager.swift` |
 | Packaging | `scripts/` |

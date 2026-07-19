@@ -1,0 +1,82 @@
+import Foundation
+
+struct AppSettings: Codable {
+    var autoConnectEngine = true
+    var downloadDirectory = "~/Downloads"
+    var maxConcurrentDownloads = 5
+    var splitCount = 64
+    var maxConnectionsPerServer = 64
+    var downloadSpeedLimit = 0
+    var uploadSpeedLimit = 0
+    var showSpeedInMenuBar = true
+    var showMainWindowOnLaunch = true
+    var keepRunningAfterMainWindowClose = true
+    var hideDockIconInMenuBarMode = true
+    var rpcHost = "127.0.0.1"
+    var rpcPort = 6800
+
+    private enum CodingKeys: String, CodingKey {
+        case autoConnectEngine
+        case downloadDirectory
+        case maxConcurrentDownloads
+        case splitCount
+        case maxConnectionsPerServer
+        case downloadSpeedLimit
+        case uploadSpeedLimit
+        case showSpeedInMenuBar
+        case showMainWindowOnLaunch
+        case keepRunningAfterMainWindowClose
+        case hideDockIconInMenuBarMode
+        case rpcHost
+        case rpcPort
+    }
+
+    init() {}
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        autoConnectEngine = try container.decodeIfPresent(Bool.self, forKey: .autoConnectEngine) ?? true
+        downloadDirectory = try container.decodeIfPresent(String.self, forKey: .downloadDirectory) ?? "~/Downloads"
+        maxConcurrentDownloads = min(max(try container.decodeIfPresent(Int.self, forKey: .maxConcurrentDownloads) ?? 5, 1), 10)
+        splitCount = try container.decodeIfPresent(Int.self, forKey: .splitCount) ?? 64
+        maxConnectionsPerServer = try container.decodeIfPresent(Int.self, forKey: .maxConnectionsPerServer) ?? 64
+        downloadSpeedLimit = Self.decodeSpeedLimit(from: container, forKey: .downloadSpeedLimit)
+        uploadSpeedLimit = Self.decodeSpeedLimit(from: container, forKey: .uploadSpeedLimit)
+        showSpeedInMenuBar = try container.decodeIfPresent(Bool.self, forKey: .showSpeedInMenuBar) ?? true
+        showMainWindowOnLaunch = try container.decodeIfPresent(Bool.self, forKey: .showMainWindowOnLaunch) ?? true
+        keepRunningAfterMainWindowClose = try container.decodeIfPresent(Bool.self, forKey: .keepRunningAfterMainWindowClose) ?? true
+        hideDockIconInMenuBarMode = try container.decodeIfPresent(Bool.self, forKey: .hideDockIconInMenuBarMode) ?? true
+        rpcHost = Self.normalizedRPCHost(try container.decodeIfPresent(String.self, forKey: .rpcHost) ?? "127.0.0.1")
+        rpcPort = try container.decodeIfPresent(Int.self, forKey: .rpcPort) ?? 6800
+    }
+
+    static func normalizedRPCHost(_ host: String) -> String {
+        let trimmed = host.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? "127.0.0.1" : trimmed
+    }
+
+    static func isLocalRPCHost(_ host: String) -> Bool {
+        switch normalizedRPCHost(host).lowercased() {
+        case "127.0.0.1", "localhost", "::1":
+            true
+        default:
+            false
+        }
+    }
+
+    private static func decodeSpeedLimit(
+        from container: KeyedDecodingContainer<CodingKeys>,
+        forKey key: CodingKeys
+    ) -> Int {
+        if let value = try? container.decode(Int.self, forKey: key) {
+            return max(value, 0)
+        }
+
+        if let legacyValue = try? container.decode(String.self, forKey: key),
+           let value = Int(legacyValue.filter(\.isNumber)) {
+            return max(value, 0)
+        }
+
+        return 0
+    }
+}

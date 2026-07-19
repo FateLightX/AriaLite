@@ -50,3 +50,22 @@ scripts/verify_release.sh
 
 1. Align release notes template with AriaFlow when cutting GitHub releases.
 2. Consider remote connection diagnostics UI for non-local `rpcHost`.
+
+
+## Follow-up: Models/Views file split (2026-07-20)
+
+Completed a pure structural split (no behavior change):
+
+### Models
+- `Persistence.swift` — app support paths, JSON, RPC secret
+- `TaskModels.swift` — filters, statuses, download task types
+- `AppSettings.swift` — persisted preferences
+- `AppStore.swift` — orchestration (kept as one file: Swift `private` is file-scoped)
+
+### Views
+- `MainWindowViews.swift` — window chrome / navigation shell
+- `TaskListViews.swift` — lists, rows, status bar
+- `AddTaskSheet.swift`, `DeleteConfirmationSheet.swift` (+ `FileSelectionSheet.swift` on AriaFlow)
+- `SettingsViews.swift` — settings tabs
+
+`AppStore` remains large by design until helpers are intentionally promoted from `private` for extension-based splits.
