@@ -23,10 +23,7 @@ Source plan: dual-app review (reliability / security / engineering)
 
 ## Deferred
 
-- Shared core with AriaFlow
-- File-level split of Models/Views
-- Notarization
-- Remote-RPC health/latency panel (product enhancement)
+Earlier deferred items were later completed or re-scoped; see follow-ups and scope decision below.
 
 ## Key code touchpoints
 
@@ -76,3 +73,14 @@ Completed a pure structural split (no behavior change):
 - `AppSettings` (and AriaFlow `history`) saves are coalesced with a 400ms Task debounce.
 - Init hydration skips scheduling.
 - Pending writes flush in `stopEngineForAppTermination()`.
+
+
+## Scope decision (2026-07-20)
+
+Explicitly **deferred / out of scope for now**:
+
+- Architecture merge (shared Core / monorepo dual-target)
+- Product enhancements (task detail, multi-select, remote diagnostics, etc.)
+- Developer ID notarization
+
+Current optimization track is considered **complete** for reliability, security hardening, file split, settings debounce, and README asset compression. Optional next step if needed later: cut GitHub Releases for 0.3.2 / 0.1.4 (or next version that folds Unreleased notes).
