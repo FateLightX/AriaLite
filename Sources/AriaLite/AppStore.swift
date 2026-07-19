@@ -4,6 +4,7 @@ import SwiftUI
 final class AppStore: ObservableObject {
     private static let maxRPCSecretLength = 128
     private static let rpcRestartDelay: Duration = .seconds(1)
+    private static let persistenceDebounce: Duration = .milliseconds(400)
 
     @Published var connectionState: ConnectionState = .stopped
     @Published var engineMessage = "下载引擎未连接"
@@ -19,13 +20,15 @@ final class AppStore: ObservableObject {
     @Published private(set) var rpcPortNeedsRestart = false
     @Published var settings: AppSettings {
         didSet {
-            LocalJSONStore.save(settings, to: LocalAppFiles.settingsURL)
+            scheduleSettingsSave()
         }
     }
 
     @Published var tasks: [DownloadTask] = []
 
     private var didAttemptAutomaticConnection = false
+    private var isHydratingPersistence = false
+    private var settingsSaveTask: Task<Void, Never>?
     private var pollingTask: Task<Void, Never>?
     private var pendingEngineRestartTask: Task<Void, Never>?
     private var consecutivePollFailures = 0
@@ -39,7 +42,9 @@ final class AppStore: ObservableObject {
 
     init() {
         let loadedSettings = LocalJSONStore.load(AppSettings.self, from: LocalAppFiles.settingsURL)
+        isHydratingPersistence = true
         settings = loadedSettings ?? AppSettings()
+        isHydratingPersistence = false
         let storedRPCSecret = LocalSecretStore.load()
         rpcSecret = Self.normalizedRPCSecret(storedRPCSecret)
         if rpcSecret != storedRPCSecret {
@@ -205,6 +210,7 @@ final class AppStore: ObservableObject {
     }
 
     func stopEngineForAppTermination() {
+        flushPendingPersistence()
         stopPolling()
         pendingEngineRestartTask?.cancel()
         pendingEngineRestartTask = nil
@@ -824,6 +830,22 @@ final class AppStore: ObservableObject {
 
     private func speedLimitOption(_ value: Int) -> String? {
         value > 0 ? "\(value)M" : nil
+    }
+
+    private func scheduleSettingsSave() {
+        guard !isHydratingPersistence else { return }
+        settingsSaveTask?.cancel()
+        settingsSaveTask = Task { [weak self] in
+            try? await Task.sleep(for: Self.persistenceDebounce)
+            guard !Task.isCancelled, let self else { return }
+            LocalJSONStore.save(self.settings, to: LocalAppFiles.settingsURL)
+        }
+    }
+
+    private func flushPendingPersistence() {
+        settingsSaveTask?.cancel()
+        settingsSaveTask = nil
+        LocalJSONStore.save(settings, to: LocalAppFiles.settingsURL)
     }
 
     private func startPolling() {

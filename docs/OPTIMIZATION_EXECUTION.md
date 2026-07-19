@@ -69,3 +69,10 @@ Completed a pure structural split (no behavior change):
 - `SettingsViews.swift` — settings tabs
 
 `AppStore` remains large by design until helpers are intentionally promoted from `private` for extension-based splits.
+
+
+## Follow-up: Settings persistence debounce (2026-07-20)
+
+- `AppSettings` (and AriaFlow `history`) saves are coalesced with a 400ms Task debounce.
+- Init hydration skips scheduling.
+- Pending writes flush in `stopEngineForAppTermination()`.

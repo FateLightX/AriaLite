@@ -2,6 +2,12 @@
 
 All notable changes to AriaLite are documented in this file.
 
+## Unreleased
+
+### Changed
+
+- Debounce settings disk writes (400ms) and flush on app termination.
+
 ## 0.1.4 - 2026-07-20
 
 ### Changed
