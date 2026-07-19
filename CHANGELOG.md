@@ -7,6 +7,7 @@ All notable changes to AriaLite are documented in this file.
 ### Changed
 
 - Debounce settings disk writes (400ms) and flush on app termination.
+- Compress README assets (`AppIcon.png` 1024→256, screenshot palette/optimized PNG).
 
 ## 0.1.4 - 2026-07-20
 
