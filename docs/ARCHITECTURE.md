@@ -37,7 +37,7 @@ SwiftUI views / menu bar
 | `AppStore.swift` | Application orchestration and RPC/engine state |
 | `Aria2Client.swift` | Typed JSON-RPC transport |
 | `EngineManager.swift` | Engine discovery, launch, stop, log tail |
-| `NotificationService.swift` | Download complete / fail / start notifications |
+| `NotificationService.swift` | Download complete / fail notifications |
 | `LoginItemService.swift` | System Settings login-item navigation |
 
 Not present (vs AriaFlow): torrent import UI, file selection, history library, peer blocklist, Dock progress, smoke CLI runner.
@@ -49,11 +49,14 @@ Data lives under `~/Library/Application Support/AriaLite` unless `ARIALITE_APP_S
 | File | Contents |
 | --- | --- |
 | `settings.json` | `AppSettings` (includes `rpcHost` / `rpcPort`; excludes secret) |
-| `rpc-secret.txt` | RPC secret |
+| `rpc-secret.txt` | RPC secret (app storage) |
+| `engine-runtime.conf` | Mode `0600` conf passed via `--conf-path` (includes `rpc-secret=…`) |
 | `download.session` | aria2 session |
 | `aria2-next.log` | Engine log |
 
 `AppSettings` uses `decodeIfPresent` defaults. New persisted fields must do the same.
+
+Settings JSON writes are debounced (400ms) in `AppStore` and flushed on app termination.
 
 ## Connection Model
 
@@ -106,7 +109,7 @@ Toolbar or row actions → corresponding `AppStore` methods → RPC → refresh.
 Settings draft → `setRPCHost` on commit → reconnect (no local engine for non-local hosts).
 
 
-Polling uses a 2s interval while downloads are active and 5s when idle. Transient RPC errors are tolerated for a few cycles before disconnecting. Waiting/stopped lists are paginated (100 per page, max 20 pages). Managed engines write RPC secret into a 0600 `engine-runtime.conf` instead of process arguments.
+Polling uses a 2s interval while downloads are active and 5s when idle. Transient RPC errors are tolerated for a few cycles before disconnecting. Waiting/stopped lists are paginated (100 per page, max 20 pages). Notifications fire only on complete/fail. Managed engines write RPC secret into a 0600 `engine-runtime.conf` instead of process arguments.
 
 ## Packaging
 
@@ -117,4 +120,4 @@ Polling uses a 2s interval while downloads are active and 5s when idle. Transien
 | `scripts/smoke_app_engine.sh` | Packaged app launches managed engine + download |
 | `scripts/verify_release.sh` | Tests → package → layout/sign/checksum → smokes |
 
-Bundle ID: `com.arialite.desktop`. Version: `0.1.4`.
+Bundle ID: `com.arialite.desktop`. Version comes from `scripts/package_app.sh` (`APP_VERSION` / `BUILD_NUMBER`).

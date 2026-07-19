@@ -16,14 +16,14 @@ AriaLite ships `aria2-next 2.5.1` for arm64 and x86_64. Source URLs, licenses, a
 Runtime arguments are assembled in `EngineManager.startIfNeeded()`:
 
 - RPC listen port (local only: `--rpc-listen-all=false`)
-- optional `--rpc-secret`
 - download directory and concurrency / split / per-server limits
 - session input and save paths
 - log path at `info` level
 - bundled `aria2.conf` when present
 - optional overall download / upload limits
+- `--conf-path` pointing at Application Support `engine-runtime.conf` (mode `0600`), which holds `rpc-secret` and related overrides
 
-AriaLite does **not** pass `--bt-peer-blocklist` (no peer blocklist feature).
+Do not put the RPC secret on process argv. AriaLite does **not** pass `--bt-peer-blocklist` (no peer blocklist feature).
 
 ## Replace Binaries
 

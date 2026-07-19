@@ -5,27 +5,30 @@
 ```bash
 export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
 git status -sb
-swift build --disable-sandbox
-swift test --disable-sandbox
+git diff --stat
 ```
 
-Then read:
+Read in order:
 
-1. `docs/ARCHITECTURE.md` — modules, data flow, connection model
-2. `CHANGELOG.md` — user-visible behavior
-3. The source file you are about to change
+1. This file (ownership + invariants)
+2. `docs/ARCHITECTURE.md` for modules, connection model, UI
+3. `docs/SIDECAR.md` only when changing the engine binary or launch args
+4. `CHANGELOG.md` for recent user-visible behavior
+5. The source file and every caller of the symbol being changed
 
-Code and tests are authoritative.
+Code and tests are authoritative. Do not recreate removed progress or optimization narrative documents.
 
 ## Project Facts
 
-- SwiftPM macOS app, SwiftUI + AppKit, macOS 14+, Simplified Chinese UI
-- No third-party Swift dependencies
-- Bundle ID `com.arialite.desktop`, app version `0.1.4`
+- SwiftPM macOS app: SwiftUI + AppKit; no third-party Swift packages
+- Deployment: macOS 14+; Liquid Glass on macOS 26
+- Toolchain: Xcode 26 / Swift 6.2
+- UI language: Simplified Chinese
+- Bundle ID `com.arialite.desktop`
 - Main window fixed `600×400` (`.windowResizability(.contentSize)`)
 - Bundled aria2-next 2.5.1 under `Sources/AriaLite/Resources/`
 - `AppSettings.rpcHost` allows remote RPC; only local hosts start the managed engine
-- No torrent UI, history, peer blocklist, or Dock progress
+- No torrent UI, history library, peer blocklist, or Dock progress
 
 ## Ownership
 
@@ -33,18 +36,30 @@ Code and tests are authoritative.
 | --- | --- |
 | Scenes / lifecycle | `AriaLiteApp.swift`, `AppDelegate.swift`, `AppPresentation.swift` |
 | UI only | `MainWindowViews.swift`, `TaskListViews.swift`, sheets, `SettingsViews.swift`, `MenuBarViews.swift` |
-| State / orchestration | `Persistence.swift`, `TaskModels.swift`, `AppSettings.swift`, `AppStore.swift` |
+| Persistence / models | `Persistence.swift`, `TaskModels.swift`, `AppSettings.swift` |
+| Orchestration | `AppStore.swift` |
 | RPC | `Aria2Client.swift` |
-| Process | `EngineManager.swift` |
-| Packaging | `scripts/` |
+| Engine process | `EngineManager.swift` |
+| Packaging / smoke | `scripts/` |
+| Tests | `Tests/` |
 
 ## Invariants
 
-- Keep `AppStore` on `@MainActor`; keep JSON-RPC details out of views
+- `AppStore` is `@MainActor`; keep JSON-RPC details out of views
 - New `AppSettings` fields must use `decodeIfPresent` defaults
+- Settings disk writes are debounced (400ms) and must flush on app termination
 - Never force-shutdown a remote RPC host
+- Managed local engine writes `rpc-secret` into `engine-runtime.conf` mode `0600` via `--conf-path`; do not put secrets on process argv
+- Default TLS check-certificate on; `rpc-allow-origin-all=false`
+- Window activation and Dock policy live only in `AppPresentation`
+- Sidecar replacement needs checksums + `THIRD_PARTY_NOTICES.md` update
 - Do not commit `dist/`, `.build/`, local app data, or RPC secrets
-- Sidecar replacement requires checksums + `THIRD_PARTY_NOTICES.md` update
+
+## Out of scope (unless explicitly requested)
+
+- Shared Core / monorepo with AriaFlow
+- Product expansions (torrent UI, history, blocklist, Dock progress, remote diagnostics)
+- Developer ID notarization
 
 ## Verification
 
@@ -58,19 +73,20 @@ Expected artifacts:
 
 ```text
 dist/AriaLite.app
-dist/AriaLite-0.1.4.zip
-dist/AriaLite-0.1.4.zip.sha256
+dist/AriaLite-<version>.zip
+dist/AriaLite-<version>.zip.sha256
 ```
 
 ## Documentation Map
 
 | Doc | Purpose |
 | --- | --- |
-| `README.md` | Users: install, build, feature summary |
-| `docs/ARCHITECTURE.md` | Modules and runtime design |
+| `README.md` | End-user install and feature summary |
+| `docs/ARCHITECTURE.md` | Modules, connection model, UI, packaging |
 | `docs/SIDECAR.md` | Engine binaries and launch contract |
 | `docs/RELEASE_CHECKLIST.md` | Release gate |
 | `CHANGELOG.md` | Version history |
-| `docs/OPTIMIZATION.md` | 0.1.4 optimization track notes |
 | `THIRD_PARTY_NOTICES.md` | GPL sidecar provenance |
 | `AGENTS.md` | This file |
+
+Update only the smallest relevant document. Prefer code + tests over long narrative docs.
