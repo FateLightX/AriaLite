@@ -50,17 +50,13 @@ final class EngineManager {
             "--max-concurrent-downloads=\(min(max(settings.maxConcurrentDownloads, 1), 10))",
             "--split=\(min(max(settings.splitCount, 1), 64))",
             "--max-connection-per-server=\(min(max(settings.maxConnectionsPerServer, 1), 64))",
-            "--check-certificate=false",
+            "--check-certificate=true",
             "--input-file=\(LocalAppFiles.sessionURL.path)",
             "--save-session=\(LocalAppFiles.sessionURL.path)",
             "--save-session-interval=30",
             "--log=\(LocalAppFiles.logURL.path)",
             "--log-level=info"
         ]
-
-        if !rpcSecret.isEmpty {
-            arguments.append("--rpc-secret=\(rpcSecret)")
-        }
 
         if let downloadLimit = Self.speedLimitArgument(settings.downloadSpeedLimit) {
             arguments.append("--max-overall-download-limit=\(downloadLimit)")
@@ -70,9 +66,8 @@ final class EngineManager {
             arguments.append("--max-overall-upload-limit=\(uploadLimit)")
         }
 
-        if let configURL = Self.bundledConfigURL {
-            arguments.append("--conf-path=\(configURL.path)")
-        }
+        let runtimeConfigURL = try Self.writeRuntimeConfig(rpcSecret: rpcSecret)
+        arguments.append("--conf-path=\(runtimeConfigURL.path)")
 
         process.arguments = arguments
         process.standardOutput = FileHandle.nullDevice
@@ -93,6 +88,28 @@ final class EngineManager {
             .split(separator: "\n")
             .suffix(lineLimit)
             .joined(separator: " ")
+    }
+
+
+    private static func writeRuntimeConfig(rpcSecret: String) throws -> URL {
+        LocalAppFiles.ensureDirectory()
+        var contents = ""
+        if let bundledConfigURL, let bundled = try? String(contentsOf: bundledConfigURL, encoding: .utf8) {
+            contents = bundled
+            if !contents.hasSuffix("\n") {
+                contents += "\n"
+            }
+        }
+        contents += "\n# Generated runtime overrides\n"
+        contents += "check-certificate=true\n"
+        contents += "rpc-allow-origin-all=false\n"
+        if !rpcSecret.isEmpty {
+            contents += "rpc-secret=\(rpcSecret)\n"
+        }
+        let url = LocalAppFiles.engineRuntimeConfigURL
+        try contents.write(to: url, atomically: true, encoding: .utf8)
+        try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
+        return url
     }
 
     private static func findExecutable() -> URL? {

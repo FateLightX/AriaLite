@@ -2,6 +2,17 @@
 
 All notable changes to AriaLite are documented in this file.
 
+## 0.1.4 - 2026-07-20
+
+### Changed
+
+- Poll slower when idle; tolerate brief RPC failures before disconnecting.
+- Paginate waiting/stopped task lists (up to 2000) and show a status-bar truncation hint.
+- Keep selection stable when a task disappears instead of jumping to the first row.
+- Notify only on complete/fail (no “任务开始” spam).
+- Default TLS certificate verification on; tighten RPC origin; keep RPC secret in a 0600 runtime conf (not process argv).
+- Add GitHub Actions verify/release workflow.
+
 ## 0.1.3 - 2026-07-19
 
 ### Changed

@@ -147,3 +147,21 @@ final class Aria2ClientTests: XCTestCase {
         XCTAssertEqual(client.endpoint.absoluteString, "http://192.168.1.10:6801/jsonrpc")
     }
 }
+
+
+@MainActor
+final class ProtocolLabelTests: XCTestCase {
+    func testProtocolLabels() {
+        XCTAssertEqual(AppStore.protocolLabel(hasBitTorrent: true, sourceURLs: ["https://x"]), "BT")
+        XCTAssertEqual(AppStore.protocolLabel(hasBitTorrent: false, sourceURLs: ["https://x"]), "HTTP")
+        XCTAssertEqual(AppStore.protocolLabel(hasBitTorrent: false, sourceURLs: ["magnet:?xt=1"]), "Magnet")
+        XCTAssertEqual(AppStore.protocolLabel(hasBitTorrent: false, sourceURLs: ["ed2k://|file|a|1|h|/"]), "ED2K")
+        XCTAssertEqual(AppStore.protocolLabel(hasBitTorrent: false, sourceURLs: []), "URL")
+    }
+
+    func testTaskStatusMapping() {
+        XCTAssertEqual(AppStore.makeTaskStatus(from: "active"), .active)
+        XCTAssertEqual(AppStore.makeTaskStatus(from: "complete"), .complete)
+        XCTAssertEqual(AppStore.makeTaskStatus(from: "error"), .failed)
+    }
+}

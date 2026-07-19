@@ -62,7 +62,7 @@ scripts/verify_release.sh
 
 ## Docs
 
-[Architecture](docs/ARCHITECTURE.md) · [Sidecar](docs/SIDECAR.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Changelog](CHANGELOG.md) · [AGENTS.md](AGENTS.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
+[Architecture](docs/ARCHITECTURE.md) · [Sidecar](docs/SIDECAR.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Optimization log](docs/OPTIMIZATION_EXECUTION.md) · [Changelog](CHANGELOG.md) · [AGENTS.md](AGENTS.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
 
 ## License
 

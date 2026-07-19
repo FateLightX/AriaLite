@@ -21,7 +21,7 @@ Code and tests are authoritative.
 
 - SwiftPM macOS app, SwiftUI + AppKit, macOS 14+, Simplified Chinese UI
 - No third-party Swift dependencies
-- Bundle ID `com.arialite.desktop`, app version `0.1.3`
+- Bundle ID `com.arialite.desktop`, app version `0.1.4`
 - Main window fixed `600×400` (`.windowResizability(.contentSize)`)
 - Bundled aria2-next 2.5.1 under `Sources/AriaLite/Resources/`
 - `AppSettings.rpcHost` allows remote RPC; only local hosts start the managed engine
@@ -58,8 +58,8 @@ Expected artifacts:
 
 ```text
 dist/AriaLite.app
-dist/AriaLite-0.1.3.zip
-dist/AriaLite-0.1.3.zip.sha256
+dist/AriaLite-0.1.4.zip
+dist/AriaLite-0.1.4.zip.sha256
 ```
 
 ## Documentation Map
@@ -71,5 +71,6 @@ dist/AriaLite-0.1.3.zip.sha256
 | `docs/SIDECAR.md` | Engine binaries and launch contract |
 | `docs/RELEASE_CHECKLIST.md` | Release gate |
 | `CHANGELOG.md` | Version history |
+| `docs/OPTIMIZATION_EXECUTION.md` | Optimization batch notes |
 | `THIRD_PARTY_NOTICES.md` | GPL sidecar provenance |
 | `AGENTS.md` | This file |

@@ -26,6 +26,10 @@ enum LocalAppFiles {
         directory.appending(path: "rpc-secret.txt")
     }
 
+    static var engineRuntimeConfigURL: URL {
+        directory.appending(path: "engine-runtime.conf")
+    }
+
     static func ensureDirectory() {
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     }
@@ -327,6 +331,8 @@ final class AppStore: ObservableObject {
     private var didAttemptAutomaticConnection = false
     private var pollingTask: Task<Void, Never>?
     private var pendingEngineRestartTask: Task<Void, Never>?
+    private var consecutivePollFailures = 0
+    @Published private(set) var taskListTruncated = false
     private let engineManager = EngineManager()
     private let notificationService = NotificationService()
     private var knownTaskStatuses: [String: TaskStatus] = [:]
@@ -551,13 +557,28 @@ final class AppStore: ObservableObject {
     }
 
     func refreshTasksFromEngine() async {
+        await refreshTasksFromEngine(softFailure: false)
+    }
+
+    private func refreshTasksFromEngine(softFailure: Bool) async {
         do {
             try await refreshTasksFromEngine(using: makeClient())
-            connectionState = .connected
+            consecutivePollFailures = 0
+            if connectionState != .connected {
+                connectionState = .connected
+            }
         } catch {
             engineMessage = error.localizedDescription
-            connectionState = .failed
-            stopPolling()
+            if softFailure {
+                consecutivePollFailures += 1
+                if consecutivePollFailures >= 3 {
+                    connectionState = .failed
+                    stopPolling()
+                }
+            } else {
+                connectionState = .failed
+                stopPolling()
+            }
         }
     }
 
@@ -771,21 +792,66 @@ final class AppStore: ObservableObject {
     private func refreshTasksFromEngine(using client: Aria2Client) async throws {
         async let globalStat = client.getGlobalStat()
         async let active = client.tellActive()
-        async let waiting = client.tellWaiting()
-        async let stopped = client.tellStopped()
+        async let waiting = fetchWaitingTasks(using: client)
+        async let stopped = fetchStoppedTasks(using: client)
 
-        let (stat, activeTasks, waitingTasks, stoppedTasks) = try await (globalStat, active, waiting, stopped)
+        let (stat, activeTasks, waitingResult, stoppedResult) = try await (globalStat, active, waiting, stopped)
         downloadSpeedText = Self.formatSpeed(stat.downloadSpeed)
         uploadSpeedText = Self.formatSpeed(stat.uploadSpeed)
+        taskListTruncated = waitingResult.truncated || stoppedResult.truncated
 
         let previousSelection = selectedTaskID
-        let refreshedTasks = (activeTasks + waitingTasks + stoppedTasks).map(Self.makeDownloadTask)
+        let refreshedTasks = (activeTasks + waitingResult.tasks + stoppedResult.tasks).map(Self.makeDownloadTask)
         notifyTaskChanges(refreshedTasks)
         tasks = refreshedTasks
-        selectedTaskID = tasks.contains { $0.id == previousSelection } ? previousSelection : tasks.first?.id
+        if let previousSelection, tasks.contains(where: { $0.id == previousSelection }) {
+            selectedTaskID = previousSelection
+        } else if previousSelection != nil {
+            selectedTaskID = nil
+        }
     }
 
-    private static func makeDownloadTask(from task: Aria2Task) -> DownloadTask {
+    private static let taskPageSize = 100
+    private static let maxTaskPages = 20
+
+    private struct TaskPageResult {
+        var tasks: [Aria2Task]
+        var truncated: Bool
+    }
+
+    private func fetchWaitingTasks(using client: Aria2Client) async throws -> TaskPageResult {
+        try await fetchPagedTasks { offset, count in
+            try await client.tellWaiting(offset: offset, count: count)
+        }
+    }
+
+    private func fetchStoppedTasks(using client: Aria2Client) async throws -> TaskPageResult {
+        try await fetchPagedTasks { offset, count in
+            try await client.tellStopped(offset: offset, count: count)
+        }
+    }
+
+    private func fetchPagedTasks(
+        _ loader: (Int, Int) async throws -> [Aria2Task]
+    ) async throws -> TaskPageResult {
+        var all: [Aria2Task] = []
+        var offset = 0
+        var truncated = false
+        for page in 0..<Self.maxTaskPages {
+            let batch = try await loader(offset, Self.taskPageSize)
+            all.append(contentsOf: batch)
+            if batch.count < Self.taskPageSize {
+                return TaskPageResult(tasks: all, truncated: false)
+            }
+            offset += batch.count
+            if page == Self.maxTaskPages - 1 {
+                truncated = true
+            }
+        }
+        return TaskPageResult(tasks: all, truncated: truncated)
+    }
+
+    static func makeDownloadTask(from task: Aria2Task) -> DownloadTask {
         let totalBytes = int64(task.totalLength)
         let completedBytes = int64(task.completedLength)
         let downloadSpeedBytes = int64(task.downloadSpeed)
@@ -817,7 +883,17 @@ final class AppStore: ObservableObject {
         )
     }
 
-    private static func makeTaskStatus(from status: String) -> TaskStatus {
+    static func protocolLabel(hasBitTorrent: Bool, sourceURLs: [String]) -> String {
+        if hasBitTorrent { return "BT" }
+        let uri = sourceURLs.first?.lowercased() ?? ""
+        if uri.hasPrefix("magnet:") { return "Magnet" }
+        if uri.hasPrefix("ed2k:") { return "ED2K" }
+        if uri.hasPrefix("ftp:") || uri.hasPrefix("sftp:") { return "FTP" }
+        if uri.hasPrefix("http://") || uri.hasPrefix("https://") { return "HTTP" }
+        return "URL"
+    }
+
+    static func makeTaskStatus(from status: String) -> TaskStatus {
         switch status {
         case "active": .active
         case "waiting": .waiting
@@ -828,25 +904,25 @@ final class AppStore: ObservableObject {
         }
     }
 
-    private static func int64(_ value: String?) -> Int64 {
+    static func int64(_ value: String?) -> Int64 {
         Int64(value ?? "") ?? 0
     }
 
-    private static func formatBytes(_ bytes: Int64) -> String {
+    static func formatBytes(_ bytes: Int64) -> String {
         let formatter = ByteCountFormatter()
         formatter.countStyle = .file
         return formatter.string(fromByteCount: bytes)
     }
 
-    private static func formatSpeed(_ bytesPerSecond: String?) -> String {
+    static func formatSpeed(_ bytesPerSecond: String?) -> String {
         formatSpeed(int64(bytesPerSecond))
     }
 
-    private static func formatSpeed(_ bytesPerSecond: Int64) -> String {
+    static func formatSpeed(_ bytesPerSecond: Int64) -> String {
         "\(formatBytes(bytesPerSecond))/s"
     }
 
-    private static func remainingTime(total: Int64, completed: Int64, speed: Int64, status: TaskStatus) -> String {
+    static func remainingTime(total: Int64, completed: Int64, speed: Int64, status: TaskStatus) -> String {
         if status == .complete { return "已完成" }
         guard total > completed, speed > 0 else { return "--" }
 
@@ -857,7 +933,7 @@ final class AppStore: ObservableObject {
         return formatter.string(from: TimeInterval((total - completed) / speed)) ?? "--"
     }
 
-    private static func fileName(from path: String) -> String {
+    static func fileName(from path: String) -> String {
         URL(fileURLWithPath: path).lastPathComponent
     }
 
@@ -980,8 +1056,6 @@ final class AppStore: ObservableObject {
                 notificationService.send(title: "下载完成", body: task.name)
             } else if task.status == .failed {
                 notificationService.send(title: "下载失败", body: task.name)
-            } else if task.status == .active {
-                notificationService.send(title: "任务开始", body: task.name)
             }
         }
     }
@@ -1057,11 +1131,14 @@ final class AppStore: ObservableObject {
 
     private func startPolling() {
         pollingTask?.cancel()
+        consecutivePollFailures = 0
         pollingTask = Task { [weak self] in
             while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(2))
+                let hasActive = await MainActor.run { (self?.activeCount ?? 0) > 0 }
+                let seconds: Double = hasActive ? 2 : 5
+                try? await Task.sleep(for: .seconds(seconds))
                 guard !Task.isCancelled else { return }
-                await self?.refreshTasksFromEngine()
+                await self?.refreshTasksFromEngine(softFailure: true)
             }
         }
     }

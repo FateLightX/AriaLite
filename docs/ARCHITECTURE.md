@@ -99,6 +99,9 @@ Toolbar or row actions → corresponding `AppStore` methods → RPC → refresh.
 **Remote host change**  
 Settings draft → `setRPCHost` on commit → reconnect (no local engine for non-local hosts).
 
+
+Polling uses a 2s interval while downloads are active and 5s when idle. Transient RPC errors are tolerated for a few cycles before disconnecting. Waiting/stopped lists are paginated (100 per page, max 20 pages). Managed engines write RPC secret into a 0600 `engine-runtime.conf` instead of process arguments.
+
 ## Packaging
 
 | Script | Role |
@@ -108,4 +111,4 @@ Settings draft → `setRPCHost` on commit → reconnect (no local engine for non
 | `scripts/smoke_app_engine.sh` | Packaged app launches managed engine + download |
 | `scripts/verify_release.sh` | Tests → package → layout/sign/checksum → smokes |
 
-Bundle ID: `com.arialite.desktop`. Version: `0.1.3`.
+Bundle ID: `com.arialite.desktop`. Version: `0.1.4`.
