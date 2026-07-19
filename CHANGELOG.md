@@ -2,6 +2,14 @@
 
 All notable changes to AriaLite are documented in this file.
 
+## 0.1.2 - 2026-07-19
+
+### Changed
+
+- Filter tabs use colorful semantic icons (全部 / 下载中 / 等待中 / 已完成 / 已失败).
+- About page GitHub link points to FateLightX/AriaLite.
+- Updated main-window README screenshot.
+
 ## 0.1.1 - 2026-07-19
 
 ### Changed

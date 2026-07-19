@@ -115,29 +115,48 @@ struct FilterTab: View {
     let isSelected: Bool
     let action: () -> Void
 
+    private var tint: Color {
+        switch filter {
+        case .all: .blue
+        case .active: .green
+        case .waiting: .orange
+        case .complete: Color(red: 0.19, green: 0.78, blue: 0.45)
+        case .failed: .red
+        }
+    }
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: 6) {
                 Image(systemName: filter.symbol)
                     .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(tint)
+                    .symbolRenderingMode(.hierarchical)
+
                 Text(filter.title)
                     .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(isSelected ? Color.primary : Color.secondary)
+
                 Text("\(count)")
                     .font(.system(size: 11, weight: .semibold).monospacedDigit())
+                    .foregroundStyle(isSelected ? tint : Color.secondary)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 1)
                     .background(
                         Capsule()
-                            .fill(isSelected ? Color.white.opacity(0.22) : Color.primary.opacity(0.08))
+                            .fill(isSelected ? tint.opacity(0.18) : Color.primary.opacity(0.08))
                     )
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
             .background(
                 Capsule()
-                    .fill(isSelected ? Color.accentColor : Color.clear)
+                    .fill(isSelected ? tint.opacity(0.14) : Color.clear)
             )
-            .foregroundStyle(isSelected ? Color.white : Color.secondary)
+            .overlay(
+                Capsule()
+                    .strokeBorder(isSelected ? tint.opacity(0.35) : Color.clear, lineWidth: 1)
+            )
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
@@ -1216,7 +1235,7 @@ struct SettingsWindowView: View {
                 }
 
                 settingsRow("GitHub", detail: nil) {
-                    Link("FateLightX/AriaFlow", destination: ariaFlowRepositoryURL)
+                    Link("FateLightX/AriaLite", destination: ariaLiteRepositoryURL)
                         .lineLimit(1)
                 }
 
@@ -1229,11 +1248,11 @@ struct SettingsWindowView: View {
     }
 
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1.1"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1.2"
     }
 
-    private var ariaFlowRepositoryURL: URL {
-        URL(string: "https://github.com/FateLightX/AriaFlow")!
+    private var ariaLiteRepositoryURL: URL {
+        URL(string: "https://github.com/FateLightX/AriaLite")!
     }
 
     private var aria2WebsiteURL: URL {

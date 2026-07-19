@@ -129,11 +129,11 @@ enum TaskFilter: String, CaseIterable, Identifiable {
 
     var symbol: String {
         switch self {
-        case .all: "tray.full"
-        case .active: "arrow.down.circle"
-        case .waiting: "clock"
-        case .complete: "checkmark.circle"
-        case .failed: "xmark.circle"
+        case .all: "square.grid.2x2.fill"
+        case .active: "arrow.down.circle.fill"
+        case .waiting: "clock.fill"
+        case .complete: "checkmark.circle.fill"
+        case .failed: "xmark.circle.fill"
         }
     }
 }

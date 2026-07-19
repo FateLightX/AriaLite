@@ -15,7 +15,7 @@
 [AriaFlow](https://github.com/FateLightX/AriaFlow) 的轻量 macOS 下载客户端：URL / magnet、内嵌 aria2-next、菜单栏速度、可配置远程 RPC。
 
 - 队列：添加、暂停/继续、删除、Finder 显示、复制链接
-- 顶部筛选、搜索、排序；菜单栏速度
+- 顶部彩色筛选、搜索、排序；菜单栏速度
 - 内嵌 Aria2 Next 2.5.1（Apple Silicon + Intel）
 - 可配置 RPC 地址 / 端口 / Secret（本机启引擎，远程只连 RPC）
 - 固定主窗口 600×400；无 Torrent 选择、历史、Blocklist、Dock 进度
@@ -46,7 +46,7 @@ scripts/verify_release.sh
 Lightweight macOS download client from [AriaFlow](https://github.com/FateLightX/AriaFlow): URL/magnet, bundled aria2-next, menu bar speed, configurable remote RPC.
 
 - Queue: add, pause/resume, delete, Reveal in Finder, copy link
-- Top filters, search, sort; menu bar speed
+- Colorful top filters, search, sort; menu bar speed
 - Aria2 Next 2.5.1 (Apple Silicon + Intel)
 - Configurable RPC host / port / secret (remote is connect-only)
 - Fixed 600×400 window; no torrent picker, history, blocklist, or Dock progress
