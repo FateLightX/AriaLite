@@ -50,13 +50,13 @@ final class EngineManager {
             "--max-concurrent-downloads=\(min(max(settings.maxConcurrentDownloads, 1), 10))",
             "--split=\(min(max(settings.splitCount, 1), 64))",
             "--max-connection-per-server=\(min(max(settings.maxConnectionsPerServer, 1), 64))",
-            "--check-certificate=true",
             "--input-file=\(LocalAppFiles.sessionURL.path)",
             "--save-session=\(LocalAppFiles.sessionURL.path)",
             "--save-session-interval=30",
             "--log=\(LocalAppFiles.logURL.path)",
             "--log-level=info"
         ]
+        arguments.append(contentsOf: Self.certificateArguments())
 
         if let downloadLimit = Self.speedLimitArgument(settings.downloadSpeedLimit) {
             arguments.append("--max-overall-download-limit=\(downloadLimit)")
@@ -101,8 +101,10 @@ final class EngineManager {
             }
         }
         contents += "\n# Generated runtime overrides\n"
-        contents += "check-certificate=true\n"
         contents += "rpc-allow-origin-all=false\n"
+        for line in Self.certificateConfigLines() {
+            contents += line + "\n"
+        }
         if !rpcSecret.isEmpty {
             contents += "rpc-secret=\(rpcSecret)\n"
         }
@@ -166,6 +168,35 @@ final class EngineManager {
 
     private static func isExecutable(_ url: URL) -> Bool {
         FileManager.default.isExecutableFile(atPath: url.path)
+    }
+
+
+    /// Prefer system CA bundle so TLS verification works for HTTPS downloads.
+    /// Falls back to disabling verification only if no readable CA file exists.
+    private static func certificateArguments() -> [String] {
+        if let path = resolvedCACertificatePath() {
+            return ["--check-certificate=true", "--ca-certificate=\(path)"]
+        }
+        return ["--check-certificate=false"]
+    }
+
+    private static func certificateConfigLines() -> [String] {
+        if let path = resolvedCACertificatePath() {
+            return ["check-certificate=true", "ca-certificate=\(path)"]
+        }
+        return ["check-certificate=false"]
+    }
+
+    private static func resolvedCACertificatePath() -> String? {
+        let candidates = [
+            "/etc/ssl/cert.pem",
+            "/private/etc/ssl/cert.pem",
+            "/usr/local/etc/openssl@3/cert.pem",
+            "/usr/local/etc/openssl/cert.pem",
+            "/opt/homebrew/etc/openssl@3/cert.pem",
+            "/opt/homebrew/etc/openssl/cert.pem"
+        ]
+        return candidates.first { FileManager.default.isReadableFile(atPath: $0) }
     }
 
     private static func speedLimitArgument(_ value: Int) -> String? {

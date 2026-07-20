@@ -23,7 +23,7 @@ Runtime arguments are assembled in `EngineManager.startIfNeeded()`:
 - optional overall download / upload limits
 - `--conf-path` pointing at Application Support `engine-runtime.conf` (mode `0600`), which holds `rpc-secret` and related overrides
 
-Do not put the RPC secret on process argv. AriaLite does **not** pass `--bt-peer-blocklist` (no peer blocklist feature).
+Do not put the RPC secret on process argv. TLS verification uses the system CA file via `ca-certificate` when available. AriaLite does **not** pass `--bt-peer-blocklist` (no peer blocklist feature).
 
 ## Replace Binaries
 

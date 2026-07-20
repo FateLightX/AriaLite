@@ -2,6 +2,12 @@
 
 All notable changes to AriaLite are documented in this file.
 
+## 0.1.5 - 2026-07-20
+
+### Fixed
+
+- HTTPS downloads failed with “unable to get local issuer certificate” after enabling TLS verification. The managed engine now loads the macOS CA bundle (`/etc/ssl/cert.pem`) via `ca-certificate`.
+
 ## 0.1.4 - 2026-07-20
 
 ### Changed

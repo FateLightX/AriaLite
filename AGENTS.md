@@ -50,7 +50,7 @@ Code and tests are authoritative. Do not recreate removed progress or optimizati
 - Settings disk writes are debounced (400ms) and must flush on app termination
 - Never force-shutdown a remote RPC host
 - Managed local engine writes `rpc-secret` into `engine-runtime.conf` mode `0600` via `--conf-path`; do not put secrets on process argv
-- Default TLS check-certificate on; `rpc-allow-origin-all=false`
+- Default TLS verification on with system CA bundle (`ca-certificate`, usually `/etc/ssl/cert.pem`); `rpc-allow-origin-all=false`
 - Window activation and Dock policy live only in `AppPresentation`
 - Sidecar replacement needs checksums + `THIRD_PARTY_NOTICES.md` update
 - Do not commit `dist/`, `.build/`, local app data, or RPC secrets
