@@ -4,6 +4,7 @@ import SwiftUI
 struct AriaLiteMenuBarLabel: View {
     @Environment(\.openWindow) private var openWindow
     @EnvironmentObject private var store: AppStore
+    @EnvironmentObject private var updater: SoftwareUpdater
     @State private var didBootstrap = false
 
     let appDelegate: AriaLiteAppDelegate
@@ -20,6 +21,7 @@ struct AriaLiteMenuBarLabel: View {
         .task {
             guard !didBootstrap else { return }
             didBootstrap = true
+            updater.start()
 
             appDelegate.configure(store: store) {
                 AppPresentation.showMainWindow(using: openWindow, store: store)

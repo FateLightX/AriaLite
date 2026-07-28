@@ -24,6 +24,16 @@ dist/AriaLite-<version>.zip
 dist/AriaLite-<version>.zip.sha256
 ```
 
+Architecture-specific builds:
+
+```bash
+ARCH=arm64 scripts/package_app.sh
+ARCH=x86_64 scripts/package_app.sh
+```
+
+These produce `AriaLite-<version>-arm64.zip` and
+`AriaLite-<version>-x86_64.zip` with only the matching sidecar.
+
 Publish:
 
 ```bash

@@ -26,7 +26,7 @@ Code and tests are authoritative. Do not recreate removed progress or optimizati
 - UI language: Simplified Chinese
 - Bundle ID `com.arialite.desktop`
 - Main window fixed `600×400` (`.windowResizability(.contentSize)`)
-- Bundled aria2-next 2.5.1 under `Sources/AriaLite/Resources/`
+- Bundled aria2-next 2.5.2 under `Sources/AriaLite/Resources/`
 - `AppSettings.rpcHost` allows remote RPC; only local hosts start the managed engine
 - No torrent UI, history library, peer blocklist, or Dock progress
 

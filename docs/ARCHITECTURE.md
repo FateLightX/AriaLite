@@ -111,6 +111,10 @@ Settings draft → `setRPCHost` on commit → reconnect (no local engine for non
 
 Polling uses a 2s interval while downloads are active and 5s when idle. Transient RPC errors are tolerated for a few cycles before disconnecting. Waiting/stopped lists are paginated (100 per page, max 20 pages). Notifications fire only on complete/fail. Managed engines write RPC secret into a 0600 `engine-runtime.conf` instead of process arguments.
 
+SoftwareUpdater monitors network availability, checks stable GitHub releases,
+falls back to the jsDelivr-hosted update manifest, validates the matching
+archive, then replaces and relaunches the app.
+
 ## Packaging
 
 | Script | Role |

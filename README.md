@@ -16,9 +16,11 @@
 
 - 队列：添加、暂停/继续、删除、Finder 显示、复制链接
 - 顶部彩色筛选、搜索、排序；菜单栏速度
-- 内嵌 Aria2 Next 2.5.1（Apple Silicon + Intel）
+- 内嵌 Aria2 Next 2.5.2（Apple Silicon + Intel）
 - 可配置 RPC 地址 / 端口 / Secret（本机启引擎，远程只连 RPC）
 - 固定主窗口 600×400；无 Torrent 选择、历史、Blocklist、Dock 进度
+- 联网后自动检查、校验并安装软件更新
+- 更新检查优先使用 GitHub 官方 API，失败时尝试 fastly.jsdelivr.net
 
 **要求：** macOS 14+（macOS 26 启用 Liquid Glass）；源码构建需 Xcode 26 / Swift 6.2。
 
@@ -47,7 +49,7 @@ Lightweight macOS download client from [AriaFlow](https://github.com/FateLightX/
 
 - Queue: add, pause/resume, delete, Reveal in Finder, copy link
 - Colorful top filters, search, sort; menu bar speed
-- Aria2 Next 2.5.1 (Apple Silicon + Intel)
+- Aria2 Next 2.5.2 (Apple Silicon + Intel)
 - Configurable RPC host / port / secret (remote is connect-only)
 - Fixed 600×400 window; no torrent picker, history, blocklist, or Dock progress
 

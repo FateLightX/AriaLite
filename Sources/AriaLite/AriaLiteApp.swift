@@ -5,6 +5,7 @@ import SwiftUI
 struct AriaLiteApp: App {
     @NSApplicationDelegateAdaptor(AriaLiteAppDelegate.self) private var appDelegate
     @StateObject private var store = AppStore()
+    @StateObject private var updater = SoftwareUpdater(configuration: .ariaLite)
 
     var body: some Scene {
         Window("AriaLite", id: "main") {
@@ -101,12 +102,14 @@ struct AriaLiteApp: App {
         } label: {
             AriaLiteMenuBarLabel(appDelegate: appDelegate)
                 .environmentObject(store)
+                .environmentObject(updater)
         }
         .menuBarExtraStyle(.menu)
 
         Settings {
             SettingsWindowView()
                 .environmentObject(store)
+                .environmentObject(updater)
                 .onAppear {
                     AppPresentation.settingsDidAppear(store: store)
                 }
