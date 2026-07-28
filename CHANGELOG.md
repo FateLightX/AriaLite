@@ -4,6 +4,8 @@ All notable changes to AriaLite are documented in this file.
 
 ## Unreleased
 
+## 0.1.6 - 2026-07-29
+
 ### Added
 
 - Added automatic software updates when network access becomes available, with
