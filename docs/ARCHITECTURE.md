@@ -38,7 +38,7 @@ SwiftUI views / menu bar
 | `Aria2Client.swift` | Typed JSON-RPC transport |
 | `EngineManager.swift` | Engine discovery, launch, stop, log tail |
 | `NotificationService.swift` | Download complete / fail notifications |
-| `LoginItemService.swift` | System Settings login-item navigation |
+| `LoginItemService.swift` | Main-app login-item registration, status and legacy cleanup |
 
 Not present (vs AriaFlow): torrent import UI, file selection, history library, peer blocklist, Dock progress, smoke CLI runner.
 

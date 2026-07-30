@@ -12,12 +12,13 @@
 
 ## 中文
 
-[AriaFlow](https://github.com/FateLightX/AriaFlow) 的轻量 macOS 下载客户端：URL / magnet、内嵌 aria2-next、菜单栏速度、可配置远程 RPC。
+[AriaFlow](https://github.com/FateLightX/AriaFlow) 的轻量 macOS 下载客户端：URL / Magnet / ED2K、内嵌 aria2-next、菜单栏速度、可配置远程 RPC。
 
 - 队列：添加、暂停/继续、删除、Finder 显示、复制链接
 - 顶部彩色筛选、搜索、排序；菜单栏速度
 - 内嵌 Aria2 Next 2.5.2（Apple Silicon + Intel）
 - 可配置 RPC 地址 / 端口 / Secret（本机启引擎，远程只连 RPC）
+- 应用内开关自动添加或移除系统登录项
 - 固定主窗口 600×400；无 Torrent 选择、历史、Blocklist、Dock 进度
 - 联网后自动检查、校验并安装软件更新
 - 更新检查优先使用 GitHub 官方 API，失败时尝试 fastly.jsdelivr.net
@@ -37,7 +38,7 @@ scripts/verify_release.sh
 
 | | AriaFlow | AriaLite |
 |---|---|---|
-| 协议 | HTTP/FTP/Magnet/ED2K/BT | HTTP/FTP/Magnet |
+| 协议 | HTTP/FTP/Magnet/ED2K/BT | HTTP/FTP/Magnet/ED2K |
 | 布局 | 侧边栏 | 顶部筛选栏 |
 | 远程 RPC | 固定本机 | 可配置 `rpcHost` |
 | 历史 / Blocklist / Dock | 有 | 无 |
@@ -45,12 +46,14 @@ scripts/verify_release.sh
 
 ## English
 
-Lightweight macOS download client from [AriaFlow](https://github.com/FateLightX/AriaFlow): URL/magnet, bundled aria2-next, menu bar speed, configurable remote RPC.
+Lightweight macOS download client from [AriaFlow](https://github.com/FateLightX/AriaFlow): URL, magnet, and ED2K downloads with bundled aria2-next, menu bar speed, and configurable remote RPC.
 
 - Queue: add, pause/resume, delete, Reveal in Finder, copy link
 - Colorful top filters, search, sort; menu bar speed
 - Aria2 Next 2.5.2 (Apple Silicon + Intel)
 - Configurable RPC host / port / secret (remote is connect-only)
+- In-app toggle for the macOS login item
+- Automatic, verified software updates with GitHub API and jsDelivr fallback
 - Fixed 600×400 window; no torrent picker, history, blocklist, or Dock progress
 
 **Requirements:** macOS 14+; Xcode 26 / Swift 6.2 to build.

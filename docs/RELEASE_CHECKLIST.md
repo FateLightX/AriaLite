@@ -32,19 +32,23 @@ ARCH=x86_64 scripts/package_app.sh
 ```
 
 These produce `AriaLite-<version>-arm64.zip` and
-`AriaLite-<version>-x86_64.zip` with only the matching sidecar.
+`AriaLite-<version>-x86_64.zip` with only the matching sidecar. Both archives
+extract to `AriaLite.app`; the architecture suffix belongs only to the ZIP name.
 
-Publish:
+## Version and Publish
 
-```bash
-gh release create v<version> \
-  dist/AriaLite-<version>.zip \
-  dist/AriaLite-<version>.zip.sha256 \
-  --title "AriaLite <version>" \
-  --notes-file -   # or --generate-notes
-```
+Before tagging, keep the release version aligned in:
 
-Update `CHANGELOG.md` and bump `APP_VERSION` / `BUILD_NUMBER` in `scripts/package_app.sh` (and Info.plist via the script) before tagging.
+- `CHANGELOG.md` and `update.json`
+- `APP_VERSION` / `BUILD_NUMBER` in `scripts/package_app.sh`
+- `APP_VERSION` in `scripts/verify_release.sh`
+- updater and About fallbacks in `SoftwareUpdater.swift` / `SettingsViews.swift`
+- the branch-build fallback in `.github/workflows/ci.yml`
+
+Push `main`, then push `v<version>`. The tag workflow validates `update.json`,
+runs the release gate, builds Universal / arm64 / x86_64 ZIPs, and creates or
+updates the GitHub Release with checksums and notices. Use `gh run watch` and
+verify the published asset list before announcing the release.
 
 ## Manual
 

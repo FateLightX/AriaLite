@@ -119,17 +119,27 @@ final class EngineManager {
     }
 
     private static func findBundledExecutable() -> URL? {
-        let bundleCandidates = bundledExecutableNames.flatMap { name in
+        let mainBundleCandidates = bundledExecutableNames.flatMap { name in
             [
                 Bundle.main.resourceURL?.appending(path: name),
                 Bundle.main.resourceURL?.appending(path: "Resources/\(name)"),
-                Bundle.main.bundleURL.appending(path: "AriaLite_AriaLite.bundle/Resources/\(name)"),
+                Bundle.main.bundleURL.appending(path: "AriaLite_AriaLite.bundle/Resources/\(name)")
+            ]
+        }
+        if let executable = mainBundleCandidates.compactMap({ $0 }).first(where: isExecutable) {
+            return executable
+        }
+
+        // Bundle.module traps when a packaged app flattens SwiftPM resources into
+        // Contents/Resources, so only evaluate it after main-bundle lookup fails.
+        let moduleCandidates = bundledExecutableNames.flatMap { name in
+            [
                 Bundle.module.resourceURL?.appending(path: name),
                 Bundle.module.resourceURL?.appending(path: "Resources/\(name)")
             ]
         }
 
-        return bundleCandidates.compactMap { $0 }.first(where: isExecutable)
+        return moduleCandidates.compactMap { $0 }.first(where: isExecutable)
     }
 
     private static func findSystemExecutable() -> URL? {
@@ -155,19 +165,29 @@ final class EngineManager {
     }
 
     static var bundledConfigURL: URL? {
-        [
+        let mainBundleCandidates = [
             Bundle.main.resourceURL?.appending(path: "aria2.conf"),
             Bundle.main.resourceURL?.appending(path: "Resources/aria2.conf"),
-            Bundle.main.bundleURL.appending(path: "AriaLite_AriaLite.bundle/Resources/aria2.conf"),
+            Bundle.main.bundleURL.appending(path: "AriaLite_AriaLite.bundle/Resources/aria2.conf")
+        ]
+        if let configURL = mainBundleCandidates.compactMap({ $0 }).first(where: fileExists) {
+            return configURL
+        }
+
+        return [
             Bundle.module.resourceURL?.appending(path: "aria2.conf"),
             Bundle.module.resourceURL?.appending(path: "Resources/aria2.conf")
         ]
         .compactMap { $0 }
-        .first { FileManager.default.fileExists(atPath: $0.path) }
+        .first(where: fileExists)
     }
 
     private static func isExecutable(_ url: URL) -> Bool {
         FileManager.default.isExecutableFile(atPath: url.path)
+    }
+
+    private static func fileExists(_ url: URL) -> Bool {
+        FileManager.default.fileExists(atPath: url.path)
     }
 
 

@@ -4,6 +4,20 @@ All notable changes to AriaLite are documented in this file.
 
 ## Unreleased
 
+## 0.1.7 - 2026-07-30
+
+### Changed
+
+- Replaced manual login-item setup with an in-app toggle backed by the macOS
+  Service Management API, with a System Settings link when approval is needed.
+- Architecture-specific ZIPs now extract to `AriaLite.app` instead of adding the
+  CPU architecture to the app bundle name.
+
+### Fixed
+
+- Fixed a launch crash in packaged builds when the managed local engine tried to
+  resolve flattened SwiftPM resources through a missing module bundle.
+
 ## 0.1.6 - 2026-07-29
 
 ### Added

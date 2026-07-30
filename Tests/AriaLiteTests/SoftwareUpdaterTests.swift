@@ -3,9 +3,9 @@ import XCTest
 
 final class SoftwareUpdaterTests: XCTestCase {
     func testComparesSemanticReleaseVersions() {
-        XCTAssertTrue(SoftwareUpdater.isVersion("0.1.6", newerThan: "0.1.5"))
-        XCTAssertTrue(SoftwareUpdater.isVersion("v1.0.0", newerThan: "0.9.9"))
-        XCTAssertFalse(SoftwareUpdater.isVersion("0.1.5", newerThan: "0.1.5"))
-        XCTAssertFalse(SoftwareUpdater.isVersion("0.1.4", newerThan: "0.1.5"))
+        XCTAssertTrue(SoftwareUpdater.isVersion("1.2.0", newerThan: "1.1.9"))
+        XCTAssertTrue(SoftwareUpdater.isVersion("v2.0.0", newerThan: "1.9.9"))
+        XCTAssertFalse(SoftwareUpdater.isVersion("1.2.0", newerThan: "1.2.0"))
+        XCTAssertFalse(SoftwareUpdater.isVersion("1.1.9", newerThan: "1.2.0"))
     }
 }
