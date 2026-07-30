@@ -9,6 +9,8 @@ export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Develope
 
 cd "$ROOT_DIR"
 
+scripts/verify_localizations.py
+
 echo "== unit tests =="
 swift test --disable-sandbox
 
@@ -26,12 +28,16 @@ test -f "$APP_DIR/Contents/Resources/AppIcon.icns"
 test -f "$APP_DIR/Contents/Resources/aria2.conf"
 test -f "$APP_DIR/Contents/Resources/THIRD_PARTY_NOTICES.md"
 test -f "$APP_DIR/Contents/Resources/ThirdParty/aria2-next/COPYING"
+test -f "$APP_DIR/Contents/Resources/en.lproj/Localizable.strings"
+test -f "$APP_DIR/Contents/Resources/zh-Hans.lproj/Localizable.strings"
+test -f "$APP_DIR/Contents/Resources/zh-Hant.lproj/Localizable.strings"
 
 echo "== Info.plist =="
 plutil -lint "$APP_DIR/Contents/Info.plist"
 [[ "$(plutil -extract CFBundleIdentifier raw "$APP_DIR/Contents/Info.plist")" == "com.arialite.desktop" ]]
 [[ "$(plutil -extract CFBundleShortVersionString raw "$APP_DIR/Contents/Info.plist")" == "$APP_VERSION" ]]
 [[ "$(plutil -extract LSMinimumSystemVersion raw "$APP_DIR/Contents/Info.plist")" == "14.0" ]]
+[[ "$(plutil -extract CFBundleDevelopmentRegion raw "$APP_DIR/Contents/Info.plist")" == "en" ]]
 
 echo "== codesign =="
 codesign --verify --deep --strict --verbose=2 "$APP_DIR"

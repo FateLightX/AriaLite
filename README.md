@@ -14,6 +14,8 @@
 
 [AriaFlow](https://github.com/FateLightX/AriaFlow) 的轻量 macOS 下载客户端：URL / Magnet / ED2K、内嵌 aria2-next、菜单栏速度、可配置远程 RPC。
 
+界面自动跟随系统语言：中文系统使用简体中文，其他语言使用英文。
+
 - 队列：添加、暂停/继续、删除、Finder 显示、复制链接
 - 顶部彩色筛选、搜索、排序；菜单栏速度
 - 内嵌 Aria2 Next 2.5.2（Apple Silicon + Intel）
@@ -47,6 +49,8 @@ scripts/verify_release.sh
 ## English
 
 Lightweight macOS download client from [AriaFlow](https://github.com/FateLightX/AriaFlow): URL, magnet, and ED2K downloads with bundled aria2-next, menu bar speed, and configurable remote RPC.
+
+The interface follows the system language: Chinese locales use Simplified Chinese, and every other locale uses English.
 
 - Queue: add, pause/resume, delete, Reveal in Finder, copy link
 - Colorful top filters, search, sort; menu bar speed

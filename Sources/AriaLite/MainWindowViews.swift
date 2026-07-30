@@ -28,47 +28,47 @@ struct MainWindowView: View {
                 Button {
                     store.showAddTask = true
                 } label: {
-                    Label("添加", systemImage: "plus")
+                    Label(L10n.tr("添加"), systemImage: "plus")
                 }
                 .disabled(store.connectionState != .connected)
-                .help("添加任务")
+                .help(L10n.tr("添加任务"))
 
                 Button {
                     Task {
                         await store.resumeSelected()
                     }
                 } label: {
-                    Label("继续", systemImage: "play.fill")
+                    Label(L10n.tr("继续"), systemImage: "play.fill")
                 }
                 .disabled(store.connectionState != .connected || !store.canResumeSelected)
-                .help("继续选中的任务")
+                .help(L10n.tr("继续选中的任务"))
 
                 Button {
                     Task {
                         await store.pauseSelected()
                     }
                 } label: {
-                    Label("暂停", systemImage: "pause.fill")
+                    Label(L10n.tr("暂停"), systemImage: "pause.fill")
                 }
                 .disabled(store.connectionState != .connected || !store.canPauseSelected)
-                .help("暂停选中的任务")
+                .help(L10n.tr("暂停选中的任务"))
 
                 Button {
                     store.showDeleteConfirmation = true
                 } label: {
-                    Label("删除", systemImage: "trash")
+                    Label(L10n.tr("删除"), systemImage: "trash")
                 }
                 .disabled(store.connectionState != .connected || store.selectedTask == nil)
-                .help("删除选中的任务")
+                .help(L10n.tr("删除选中的任务"))
             }
 
             ToolbarItemGroup(placement: .automatic) {
                 Button {
                     openSettings()
                 } label: {
-                    Label("设置", systemImage: "gearshape")
+                    Label(L10n.tr("设置"), systemImage: "gearshape")
                 }
-                .help("打开设置")
+                .help(L10n.tr("打开设置"))
             }
         }
         .sheet(isPresented: $store.showAddTask) {
@@ -172,27 +172,27 @@ struct ContentAreaView: View {
             switch store.connectionState {
             case .starting:
                 ConnectionStateView(
-                    title: "正在连接",
-                    message: "正在启动 aria2-next 引擎",
+                    title: L10n.tr("正在连接"),
+                    message: L10n.tr("正在启动 aria2-next 引擎"),
                     symbol: "hourglass",
                     primaryActionTitle: nil,
                     secondaryActionTitle: nil
                 )
             case .failed:
                 ConnectionStateView(
-                    title: "无法连接",
-                    message: "请重试连接或检查引擎设置。",
+                    title: L10n.tr("无法连接"),
+                    message: L10n.tr("请重试连接或检查引擎设置。"),
                     symbol: "wifi.slash",
-                    primaryActionTitle: "重试连接",
-                    secondaryActionTitle: "打开设置"
+                    primaryActionTitle: L10n.tr("重试连接"),
+                    secondaryActionTitle: L10n.tr("打开设置")
                 )
             case .stopped:
                 ConnectionStateView(
-                    title: "引擎已停止",
-                    message: "下载引擎没有运行",
+                    title: L10n.tr("引擎已停止"),
+                    message: L10n.tr("下载引擎没有运行"),
                     symbol: "stop.circle",
-                    primaryActionTitle: "重新连接",
-                    secondaryActionTitle: "打开设置"
+                    primaryActionTitle: L10n.tr("重新连接"),
+                    secondaryActionTitle: L10n.tr("打开设置")
                 )
             case .connected:
                 if store.filteredTasks.isEmpty && store.taskSearchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {

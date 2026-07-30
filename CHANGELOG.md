@@ -4,6 +4,11 @@ All notable changes to AriaLite are documented in this file.
 
 ## Unreleased
 
+### Added
+
+- Added automatic Simplified Chinese and English UI localization. Chinese
+  system languages use Chinese; all other languages fall back to English.
+
 ## 0.1.7 - 2026-07-30
 
 ### Changed

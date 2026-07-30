@@ -9,13 +9,13 @@ enum EngineManagerError: Error, LocalizedError {
     var errorDescription: String? {
         switch self {
         case .executableNotFound:
-            "找不到 aria2 可执行文件。请先安装 aria2，或将 aria2c/aria2-next 放入应用资源目录。"
+            L10n.tr("找不到 aria2 可执行文件。请先安装 aria2，或将 aria2c/aria2-next 放入应用资源目录。")
         case .processExited(let logTail):
-            logTail.isEmpty ? "aria2 引擎启动后立即退出。" : "aria2 引擎启动后立即退出：\(logTail)"
+            logTail.isEmpty ? L10n.tr("aria2 引擎启动后立即退出。") : L10n.tr("aria2 引擎启动后立即退出：\(logTail)")
         case .rpcUnavailable(let logTail):
-            logTail.isEmpty ? "aria2 引擎已启动，但 RPC 暂不可用。" : "aria2 引擎已启动，但 RPC 暂不可用：\(logTail)"
+            logTail.isEmpty ? L10n.tr("aria2 引擎已启动，但 RPC 暂不可用。") : L10n.tr("aria2 引擎已启动，但 RPC 暂不可用：\(logTail)")
         case .externalRPCInUse(let port):
-            "RPC 端口 \(port) 已被外部 aria2 占用。请关闭该进程，或修改 AriaLite 的 RPC 端口后重试。"
+            L10n.tr("RPC 端口 \(port) 已被外部 aria2 占用。请关闭该进程，或修改 AriaLite 的 RPC 端口后重试。")
         }
     }
 }

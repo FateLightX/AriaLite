@@ -23,7 +23,8 @@ Code and tests are authoritative. Do not recreate removed progress or optimizati
 - SwiftPM macOS app: SwiftUI + AppKit; no third-party Swift packages
 - Deployment: macOS 14+; Liquid Glass on macOS 26
 - Toolchain: Xcode 26 / Swift 6.2
-- UI language: Simplified Chinese
+- UI languages: Simplified Chinese and English; every `zh-*` system language
+  uses Chinese, all other languages fall back to English
 - Bundle ID `com.arialite.desktop`
 - Main window fixed `600×400` (`.windowResizability(.contentSize)`)
 - Bundled aria2-next 2.5.2 under `Sources/AriaLite/Resources/`

@@ -7,7 +7,7 @@ final class AppStore: ObservableObject {
     private static let persistenceDebounce: Duration = .milliseconds(400)
 
     @Published var connectionState: ConnectionState = .stopped
-    @Published var engineMessage = "下载引擎未连接"
+    @Published var engineMessage = L10n.tr("下载引擎未连接")
     @Published var downloadSpeedText = "0 B/s"
     @Published var uploadSpeedText = "0 B/s"
     @Published var selectedFilter: TaskFilter = .all
@@ -58,7 +58,7 @@ final class AppStore: ObservableObject {
         LoginItemService.removeLegacyLaunchAgent()
         if settings.autoConnectEngine {
             connectionState = .starting
-            engineMessage = "正在连接 aria2 RPC"
+            engineMessage = L10n.tr("正在连接 aria2 RPC")
         }
         notificationService.requestAuthorization()
 
@@ -80,7 +80,7 @@ final class AppStore: ObservableObject {
         do {
             try LoginItemService.setEnabled(enabled)
         } catch {
-            loginItemErrorMessage = "设置登录项失败：\(error.localizedDescription)"
+            loginItemErrorMessage = L10n.tr("设置登录项失败：\(error.localizedDescription)")
         }
         refreshLoginItemStatus()
     }
@@ -192,7 +192,7 @@ final class AppStore: ObservableObject {
             let client = makeClient()
             let version = try await connectOrStartEngine(client: client)
             try await refreshTasksFromEngine(using: client)
-            engineMessage = "aria2 \(version.version) 已连接"
+            engineMessage = L10n.tr("aria2 \(version.version) 已连接")
             connectionState = .connected
             startPolling()
         } catch {
@@ -206,7 +206,7 @@ final class AppStore: ObservableObject {
         stopPolling()
         engineManager.stop()
         connectionState = .stopped
-        engineMessage = "下载引擎已停止"
+        engineMessage = L10n.tr("下载引擎已停止")
     }
 
     func stopEngineSavingSession() async {
@@ -232,11 +232,11 @@ final class AppStore: ObservableObject {
         pendingEngineRestartTask = nil
         engineManager.stop()
         connectionState = .stopped
-        engineMessage = "下载引擎已停止"
+        engineMessage = L10n.tr("下载引擎已停止")
     }
 
     func restartEngineSavingSession() async {
-        engineMessage = "正在重启 aria2 引擎"
+        engineMessage = L10n.tr("正在重启 aria2 引擎")
         await stopEngineSavingSession()
         await retryEngineConnection()
         if connectionState == .connected {
@@ -254,9 +254,9 @@ final class AppStore: ObservableObject {
         guard connectionState == .connected else { return }
         do {
             _ = try await makeClient().saveSession()
-            engineMessage = "下载会话已保存"
+            engineMessage = L10n.tr("下载会话已保存")
         } catch {
-            engineMessage = "保存下载会话失败：\(error.localizedDescription)"
+            engineMessage = L10n.tr("保存下载会话失败：\(error.localizedDescription)")
         }
     }
 
@@ -326,8 +326,8 @@ final class AppStore: ObservableObject {
         settings.rpcHost = normalizedHost
         rpcPortNeedsRestart = true
         engineMessage = AppSettings.isLocalRPCHost(normalizedHost)
-            ? "RPC 地址已保存，正在重启引擎"
-            : "RPC 地址已保存，正在重新连接"
+            ? L10n.tr("RPC 地址已保存，正在重启引擎")
+            : L10n.tr("RPC 地址已保存，正在重新连接")
         scheduleAutomaticEngineRestart()
     }
 
@@ -336,7 +336,7 @@ final class AppStore: ObservableObject {
         guard settings.rpcPort != normalizedPort else { return }
         settings.rpcPort = normalizedPort
         rpcPortNeedsRestart = true
-        engineMessage = "RPC 端口已保存，正在重启引擎"
+        engineMessage = L10n.tr("RPC 端口已保存，正在重启引擎")
         scheduleAutomaticEngineRestart()
     }
 
@@ -345,7 +345,7 @@ final class AppStore: ObservableObject {
         guard rpcSecret != normalizedSecret else { return }
         rpcSecret = normalizedSecret
         LocalSecretStore.save(normalizedSecret)
-        engineMessage = "RPC Secret 已保存，正在重启引擎"
+        engineMessage = L10n.tr("RPC Secret 已保存，正在重启引擎")
         if restartEngine {
             scheduleAutomaticEngineRestart()
         }
@@ -355,7 +355,7 @@ final class AppStore: ObservableObject {
         setRPCSecret("", restartEngine: false)
         settings = AppSettings()
         activeRPCHost = AppSettings.normalizedRPCHost(settings.rpcHost)
-        engineMessage = "设置已恢复默认值"
+        engineMessage = L10n.tr("设置已恢复默认值")
     }
 
     private func scheduleAutomaticEngineRestart() {
@@ -414,19 +414,19 @@ final class AppStore: ObservableObject {
 
     func taskSummary(for task: DownloadTask) -> String {
         var lines = [
-            "名称：\(task.name)",
+            L10n.tr("名称：\(task.name)"),
             "GID：\(task.gid)",
-            "状态：\(task.status.title)",
-            "进度：\(Int((task.progress * 100).rounded()))%",
-            "大小：\(task.completedSize) / \(task.totalSize)",
-            "下载速度：\(task.downloadSpeed)",
-            "上传速度：\(task.uploadSpeed)",
-            "剩余时间：\(task.remainingTime)",
-            "保存位置：\(task.savePath)"
+            L10n.tr("状态：\(task.status.title)"),
+            L10n.tr("进度：\(Int((task.progress * 100).rounded()))%"),
+            L10n.tr("大小：\(task.completedSize) / \(task.totalSize)"),
+            L10n.tr("下载速度：\(task.downloadSpeed)"),
+            L10n.tr("上传速度：\(task.uploadSpeed)"),
+            L10n.tr("剩余时间：\(task.remainingTime)"),
+            L10n.tr("保存位置：\(task.savePath)")
         ]
 
         if let errorMessage = task.errorMessage {
-            lines.append("错误：\(errorMessage)")
+            lines.append(L10n.tr("错误：\(errorMessage)"))
         }
 
         return lines.joined(separator: "\n")
@@ -454,7 +454,7 @@ final class AppStore: ObservableObject {
 
         if result.failed > 0 {
             let path = result.failedPaths.first.map { "：\($0)" } ?? ""
-            engineMessage = "删除任务已完成，\(result.failed) 项未能移到废纸篓\(path)（\(result.lastError ?? "未知错误")）"
+            engineMessage = L10n.tr("删除任务已完成，\(result.failed) 项未能移到废纸篓\(path)（\(result.lastError ?? L10n.tr("未知错误"))）")
         }
 
         return result
@@ -504,7 +504,7 @@ final class AppStore: ObservableObject {
                 "max-overall-upload-limit": speedLimitOption(settings.uploadSpeedLimit) ?? "0"
             ])
         } catch {
-            engineMessage = "设置已保存，但同步到 aria2 失败：\(error.localizedDescription)"
+            engineMessage = L10n.tr("设置已保存，但同步到 aria2 失败：\(error.localizedDescription)")
         }
     }
 
@@ -642,7 +642,7 @@ final class AppStore: ObservableObject {
     }
 
     static func remainingTime(total: Int64, completed: Int64, speed: Int64, status: TaskStatus) -> String {
-        if status == .complete { return "已完成" }
+        if status == .complete { return L10n.tr("已完成") }
         guard total > completed, speed > 0 else { return "--" }
 
         let formatter = DateComponentsFormatter()
@@ -668,7 +668,7 @@ final class AppStore: ObservableObject {
                 return try await waitForEngine(client: client, requireManagedProcess: true)
             }
 
-            engineMessage = "正在停止本地 aria2 引擎以应用新的 RPC 设置"
+            engineMessage = L10n.tr("正在停止本地 aria2 引擎以应用新的 RPC 设置")
             _ = try? await client.saveSession()
             _ = try? await client.forceShutdown()
             try? await waitForExternalEngineToStop(client: client)
@@ -681,12 +681,12 @@ final class AppStore: ObservableObject {
         activeRPCToken = rpcSecret
 
         if !isLocal {
-            engineMessage = "正在连接远程 aria2 RPC（\(host):\(settings.rpcPort)）"
+            engineMessage = L10n.tr("正在连接远程 aria2 RPC（\(host):\(settings.rpcPort)）")
             return try await waitForEngine(client: makeClient(), requireManagedProcess: false)
         }
 
         if let _ = try? await client.getVersion() {
-            engineMessage = "正在重启旧 aria2 引擎以应用新设置"
+            engineMessage = L10n.tr("正在重启旧 aria2 引擎以应用新设置")
             _ = try? await client.saveSession()
             _ = try await client.forceShutdown()
             try await waitForExternalEngineToStop(client: client)
@@ -699,7 +699,7 @@ final class AppStore: ObservableObject {
         }
 
         let launchClient = makeClient()
-        engineMessage = "正在启动 aria2 引擎"
+        engineMessage = L10n.tr("正在启动 aria2 引擎")
         try engineManager.startIfNeeded(settings: settings, rpcSecret: rpcSecret)
         return try await waitForEngine(client: launchClient, requireManagedProcess: true)
     }
@@ -725,7 +725,7 @@ final class AppStore: ObservableObject {
             }
         }
 
-        throw lastError ?? EngineManagerError.rpcUnavailable("无法连接 \(client.endpoint.host ?? "RPC"):\(client.endpoint.port ?? settings.rpcPort)")
+        throw lastError ?? EngineManagerError.rpcUnavailable(L10n.tr("无法连接 \(client.endpoint.host ?? "RPC"):\(client.endpoint.port ?? settings.rpcPort)"))
     }
 
     private func waitForExternalEngineToStop(client: Aria2Client) async throws {
@@ -738,7 +738,7 @@ final class AppStore: ObservableObject {
             try await Task.sleep(for: .milliseconds(250))
         }
 
-        throw EngineManagerError.rpcUnavailable("旧 aria2 引擎未释放 RPC 端口 \(settings.rpcPort)。")
+        throw EngineManagerError.rpcUnavailable(L10n.tr("旧 aria2 引擎未释放 RPC 端口 \(settings.rpcPort)。"))
     }
 
     private func waitForManagedEngineToStop() async throws {
@@ -750,7 +750,7 @@ final class AppStore: ObservableObject {
         }
 
         let port = activeRPCPort ?? settings.rpcPort
-        throw EngineManagerError.rpcUnavailable("旧 aria2 引擎进程未完全退出，RPC 端口 \(port) 尚未释放。")
+        throw EngineManagerError.rpcUnavailable(L10n.tr("旧 aria2 引擎进程未完全退出，RPC 端口 \(port) 尚未释放。"))
     }
 
     private func handleRPCError(_ error: Error) {
@@ -772,9 +772,9 @@ final class AppStore: ObservableObject {
             guard previousStatus != task.status else { continue }
 
             if task.status == .complete {
-                notificationService.send(title: "下载完成", body: task.name)
+                notificationService.send(title: L10n.tr("下载完成"), body: task.name)
             } else if task.status == .failed {
-                notificationService.send(title: "下载失败", body: task.name)
+                notificationService.send(title: L10n.tr("下载失败"), body: task.name)
             }
         }
     }

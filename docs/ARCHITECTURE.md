@@ -39,6 +39,7 @@ SwiftUI views / menu bar
 | `EngineManager.swift` | Engine discovery, launch, stop, log tail |
 | `NotificationService.swift` | Download complete / fail notifications |
 | `LoginItemService.swift` | Main-app login-item registration, status and legacy cleanup |
+| `Localization.swift` / `Resources/*.lproj` | System-language selection, interpolation-safe lookup and English resources |
 
 Not present (vs AriaFlow): torrent import UI, file selection, history library, peer blocklist, Dock progress, smoke CLI runner.
 
@@ -82,6 +83,11 @@ Bundled resource names:
 - `aria2.conf`
 
 ## UI Layout
+
+`L10n` selects Chinese for any preferred language beginning with `zh`; all
+other languages use the English table. Chinese source strings are the stable
+translation keys, including interpolation placeholders. `verify_localizations.py`
+rejects missing translations and placeholder mismatches.
 
 ```text
 ┌──────────────── AriaLite 600×400 (fixed) ────────────────┐

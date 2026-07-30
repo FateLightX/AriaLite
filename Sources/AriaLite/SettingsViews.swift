@@ -11,10 +11,10 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .general: "通用"
-        case .downloads: "下载"
-        case .engine: "引擎"
-        case .about: "关于"
+        case .general: L10n.tr("通用")
+        case .downloads: L10n.tr("下载")
+        case .engine: L10n.tr("引擎")
+        case .about: L10n.tr("关于")
         }
     }
 
@@ -123,16 +123,16 @@ struct SettingsWindowView: View {
     private func settingsDetail(for category: SettingsCategory) -> some View {
         switch category {
         case .general:
-            settingsPanel(title: "启动与常驻", symbol: "gearshape") {
-                toggleRow("菜单栏显示速度", isOn: $store.settings.showSpeedInMenuBar)
+            settingsPanel(title: L10n.tr("启动与常驻"), symbol: "gearshape") {
+                toggleRow(L10n.tr("菜单栏显示速度"), isOn: $store.settings.showSpeedInMenuBar)
                 toggleRow(
-                    "登录时自动启动",
+                    L10n.tr("登录时自动启动"),
                     detail: store.loginItemStatus.detailText,
                     isOn: launchAtLoginBinding
                 )
                 if store.loginItemStatus == .requiresApproval {
-                    settingsRow("系统批准", detail: "macOS 需要确认后才能在登录时启动") {
-                        Button("打开登录项与扩展") {
+                    settingsRow(L10n.tr("系统批准"), detail: L10n.tr("macOS 需要确认后才能在登录时启动")) {
+                        Button(L10n.tr("打开登录项与扩展")) {
                             store.openLoginItemSettings()
                         }
                         .controlSize(.small)
@@ -144,26 +144,26 @@ struct SettingsWindowView: View {
                         .foregroundStyle(.red)
                 }
 
-                toggleRow("启动时进入菜单栏", isOn: launchInMenuBarBinding)
-                toggleRow("关闭主窗口后继续运行", isOn: $store.settings.keepRunningAfterMainWindowClose)
-                toggleRow("隐藏 Dock 图标", isOn: hideDockIconBinding)
+                toggleRow(L10n.tr("启动时进入菜单栏"), isOn: launchInMenuBarBinding)
+                toggleRow(L10n.tr("关闭主窗口后继续运行"), isOn: $store.settings.keepRunningAfterMainWindowClose)
+                toggleRow(L10n.tr("隐藏 Dock 图标"), isOn: hideDockIconBinding)
                     .disabled(!canRunInMenuBar)
-                Text("开启后不出现在 Dock，主窗口与设置仍可打开。")
+                Text(L10n.tr("开启后不出现在 Dock，主窗口与设置仍可打开。"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
 
-            settingsPanel(title: "维护", symbol: "arrow.counterclockwise") {
-                settingsRow("恢复默认设置", detail: nil) {
-                    Button("恢复默认设置", role: .destructive) {
+            settingsPanel(title: L10n.tr("维护"), symbol: "arrow.counterclockwise") {
+                settingsRow(L10n.tr("恢复默认设置"), detail: nil) {
+                    Button(L10n.tr("恢复默认设置"), role: .destructive) {
                         store.resetSettings()
                     }
                 }
             }
 
         case .downloads:
-            settingsPanel(title: "保存位置", symbol: "folder") {
-                settingsRow("默认保存位置", detail: nil) {
+            settingsPanel(title: L10n.tr("保存位置"), symbol: "folder") {
+                settingsRow(L10n.tr("默认保存位置"), detail: nil) {
                     HStack(spacing: 8) {
                         pathValue(store.settings.downloadDirectory)
                         chooseDirectoryButton
@@ -171,8 +171,8 @@ struct SettingsWindowView: View {
                 }
             }
 
-            settingsPanel(title: "队列与速度", symbol: "speedometer") {
-                settingsRow("最大同时下载数", detail: nil) {
+            settingsPanel(title: L10n.tr("队列与速度"), symbol: "speedometer") {
+                settingsRow(L10n.tr("最大同时下载数"), detail: nil) {
                     HStack(spacing: 8) {
                         TextField("5", value: $store.settings.maxConcurrentDownloads, format: .number)
                             .labelsHidden()
@@ -184,7 +184,7 @@ struct SettingsWindowView: View {
                                 applyRuntimeDownloadSettings()
                             }
 
-                        Stepper("最大同时下载数", value: $store.settings.maxConcurrentDownloads, in: 1...10)
+                        Stepper(L10n.tr("最大同时下载数"), value: $store.settings.maxConcurrentDownloads, in: 1...10)
                             .labelsHidden()
                             .controlSize(.small)
                     }
@@ -194,7 +194,7 @@ struct SettingsWindowView: View {
                     }
                 }
 
-                settingsRow("默认分片数", detail: nil) {
+                settingsRow(L10n.tr("默认分片数"), detail: nil) {
                     HStack(spacing: 8) {
                         TextField("64", value: $store.settings.splitCount, format: .number)
                             .labelsHidden()
@@ -205,7 +205,7 @@ struct SettingsWindowView: View {
                                 store.normalizeSettings()
                             }
 
-                        Stepper("默认分片数", value: $store.settings.splitCount, in: 1...64)
+                        Stepper(L10n.tr("默认分片数"), value: $store.settings.splitCount, in: 1...64)
                             .labelsHidden()
                             .controlSize(.small)
                     }
@@ -214,7 +214,7 @@ struct SettingsWindowView: View {
                     }
                 }
 
-                settingsRow("HTTP 单服务器最大连接数", detail: nil) {
+                settingsRow(L10n.tr("HTTP 单服务器最大连接数"), detail: nil) {
                     HStack(spacing: 8) {
                         TextField("64", value: $store.settings.maxConnectionsPerServer, format: .number)
                             .labelsHidden()
@@ -225,7 +225,7 @@ struct SettingsWindowView: View {
                                 store.normalizeSettings()
                             }
 
-                        Stepper("HTTP 单服务器最大连接数", value: $store.settings.maxConnectionsPerServer, in: 1...64)
+                        Stepper(L10n.tr("HTTP 单服务器最大连接数"), value: $store.settings.maxConnectionsPerServer, in: 1...64)
                             .labelsHidden()
                             .controlSize(.small)
                     }
@@ -234,7 +234,7 @@ struct SettingsWindowView: View {
                     }
                 }
 
-                settingsRow("下载限速", detail: nil) {
+                settingsRow(L10n.tr("下载限速"), detail: nil) {
                     HStack(spacing: 6) {
                         TextField("0", value: $store.settings.downloadSpeedLimit, format: .number)
                             .labelsHidden()
@@ -251,7 +251,7 @@ struct SettingsWindowView: View {
                     }
                 }
 
-                settingsRow("上传限速", detail: nil) {
+                settingsRow(L10n.tr("上传限速"), detail: nil) {
                     HStack(spacing: 6) {
                         TextField("0", value: $store.settings.uploadSpeedLimit, format: .number)
                             .labelsHidden()
@@ -271,7 +271,7 @@ struct SettingsWindowView: View {
 
         case .engine:
             settingsPanel(title: "RPC", symbol: "network") {
-                settingsRow("RPC 地址", detail: "本机 127.0.0.1，或远程主机") {
+                settingsRow(L10n.tr("RPC 地址"), detail: L10n.tr("本机 127.0.0.1，或远程主机")) {
                     TextField("", text: $rpcHostDraft, prompt: Text("127.0.0.1"))
                         .labelsHidden()
                         .multilineTextAlignment(.trailing)
@@ -282,7 +282,7 @@ struct SettingsWindowView: View {
                         }
                 }
 
-                settingsRow("RPC 端口", detail: nil) {
+                settingsRow(L10n.tr("RPC 端口"), detail: nil) {
                     TextField("", text: rpcPortBinding, prompt: Text("6800"))
                         .labelsHidden()
                         .multilineTextAlignment(.trailing)
@@ -291,7 +291,7 @@ struct SettingsWindowView: View {
                 }
 
                 settingsRow("RPC Secret", detail: nil) {
-                    TextField("", text: rpcSecretBinding, prompt: Text("空"))
+                    TextField("", text: rpcSecretBinding, prompt: Text(L10n.tr("空")))
                         .labelsHidden()
                         .multilineTextAlignment(.trailing)
                         .textFieldStyle(.roundedBorder)
@@ -300,11 +300,11 @@ struct SettingsWindowView: View {
 
                 HStack(alignment: .center, spacing: 18) {
                     HStack(spacing: 6) {
-                        Text("引擎状态")
+                        Text(L10n.tr("引擎状态"))
                             .font(.body)
 
                         if store.rpcPortNeedsRestart {
-                            Text("RPC 修改后需重连")
+                            Text(L10n.tr("RPC 修改后需重连"))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -315,7 +315,7 @@ struct SettingsWindowView: View {
                     Label(store.connectionState.title, systemImage: store.connectionState.symbol)
                         .foregroundStyle(store.connectionState.color)
 
-                    Button("重启引擎") {
+                    Button(L10n.tr("重启引擎")) {
                         restartEngine()
                     }
                     .controlSize(.small)
@@ -323,30 +323,30 @@ struct SettingsWindowView: View {
                 }
             }
 
-            settingsPanel(title: "引擎操作", subtitle: "这些操作会影响当前下载引擎状态", symbol: "terminal") {
+            settingsPanel(title: L10n.tr("引擎操作"), subtitle: L10n.tr("这些操作会影响当前下载引擎状态"), symbol: "terminal") {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
-                        Button("重试连接") {
+                        Button(L10n.tr("重试连接")) {
                             retryConnection()
                         }
 
-                        Button("停止引擎") {
+                        Button(L10n.tr("停止引擎")) {
                             Task {
                                 await store.stopEngineSavingSession()
                             }
                         }
 
-                        Button("保存会话") {
+                        Button(L10n.tr("保存会话")) {
                             saveSession()
                         }
                     }
 
                     HStack(spacing: 8) {
-                        Button("打开日志") {
+                        Button(L10n.tr("打开日志")) {
                             openLogFolder()
                         }
 
-                        Button("打开数据目录") {
+                        Button(L10n.tr("打开数据目录")) {
                             openDataFolder()
                         }
                     }
@@ -356,18 +356,18 @@ struct SettingsWindowView: View {
 
         case .about:
             settingsPanel(title: "AriaLite", symbol: "info.circle") {
-                settingsRow("软件版本", detail: nil) {
+                settingsRow(L10n.tr("软件版本"), detail: nil) {
                     Text(appVersion)
                         .foregroundStyle(.secondary)
                 }
 
-                settingsRow("Aria2 Next 版本", detail: nil) {
+                settingsRow(L10n.tr("Aria2 Next 版本"), detail: nil) {
                     Text("2.5.2")
                         .foregroundStyle(.secondary)
                 }
 
-                settingsRow("更新软件", detail: updater.statusText) {
-                    Button(updater.isBusy ? "处理中…" : "检查更新") {
+                settingsRow(L10n.tr("更新软件"), detail: updater.statusText) {
+                    Button(updater.isBusy ? L10n.tr("处理中…") : L10n.tr("检查更新")) {
                         updater.checkNow()
                     }
                     .controlSize(.small)
@@ -379,7 +379,7 @@ struct SettingsWindowView: View {
                         .lineLimit(1)
                 }
 
-                settingsRow("官网", detail: nil) {
+                settingsRow(L10n.tr("官网"), detail: nil) {
                     Link("aria2.github.io", destination: aria2WebsiteURL)
                         .lineLimit(1)
                 }
@@ -461,7 +461,7 @@ struct SettingsWindowView: View {
     }
 
     private var chooseDirectoryButton: some View {
-        Button("选择...") {
+        Button(L10n.tr("选择...")) {
             chooseDownloadDirectory()
         }
         .controlSize(.small)
@@ -473,7 +473,7 @@ struct SettingsWindowView: View {
         panel.canChooseDirectories = true
         panel.allowsMultipleSelection = false
         panel.canCreateDirectories = true
-        panel.prompt = "选择"
+        panel.prompt = L10n.tr("选择")
 
         if panel.runModal() == .OK, let url = panel.url {
             store.settings.downloadDirectory = url.path
