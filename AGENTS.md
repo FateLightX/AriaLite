@@ -27,7 +27,7 @@ Code and tests are authoritative. Do not recreate removed progress or optimizati
   uses Chinese, all other languages fall back to English
 - Bundle ID `com.arialite.desktop`
 - Main window fixed `600×400` (`.windowResizability(.contentSize)`)
-- Bundled aria2-next 2.5.2 under `Sources/AriaLite/Resources/`
+- Bundled aria2-next 2.5.5 under `Sources/AriaLite/Resources/`
 - `AppSettings.rpcHost` allows remote RPC; only local hosts start the managed engine
 - No torrent UI, history library, peer blocklist, or Dock progress
 
@@ -83,6 +83,7 @@ dist/AriaLite-<version>.zip.sha256
 | Doc | Purpose |
 | --- | --- |
 | `README.md` | End-user install and feature summary |
+| `docs/AI_DEVELOPMENT.md` | Shortest AI continuation guide and handoff entrypoints |
 | `docs/ARCHITECTURE.md` | Modules, connection model, UI, packaging |
 | `docs/SIDECAR.md` | Engine binaries and launch contract |
 | `docs/RELEASE_CHECKLIST.md` | Release gate |

@@ -140,6 +140,7 @@
 "正在连接 aria2 RPC" = "Connecting to aria2 RPC";
 "正在连接远程 aria2 RPC（{{0}}:{{1}}）" = "Connecting to remote aria2 RPC ({{0}}:{{1}})";
 "正在重启 aria2 引擎" = "Restarting the aria2 engine";
+"aria2 RPC 无响应，正在重启本地引擎" = "aria2 RPC is unresponsive. Restarting the local engine";
 "正在重启旧 aria2 引擎以应用新设置" = "Restarting the previous aria2 engine to apply new settings";
 "正在验证更新…" = "Verifying update…";
 "没有下载任务" = "No Download Tasks";
