@@ -15,7 +15,7 @@ final class SoftwareUpdater: ObservableObject {
             appName: "AriaLite",
             bundleIdentifier: "com.arialite.desktop",
             repository: "FateLightX/AriaLite",
-            fallbackVersion: "0.1.7"
+            fallbackVersion: "0.2.0"
         )
     }
 
