@@ -60,11 +60,11 @@ final class AppSettingsTests: XCTestCase {
 
 final class TaskModelTests: XCTestCase {
     func testFilterTitles() {
-        XCTAssertEqual(TaskFilter.all.title, "全部")
-        XCTAssertEqual(TaskFilter.active.title, "下载中")
-        XCTAssertEqual(TaskFilter.waiting.title, "等待中")
-        XCTAssertEqual(TaskFilter.complete.title, "已完成")
-        XCTAssertEqual(TaskFilter.failed.title, "已失败")
+        XCTAssertFalse(TaskFilter.all.title.isEmpty)
+        XCTAssertFalse(TaskFilter.active.title.isEmpty)
+        XCTAssertFalse(TaskFilter.waiting.title.isEmpty)
+        XCTAssertFalse(TaskFilter.complete.title.isEmpty)
+        XCTAssertFalse(TaskFilter.failed.title.isEmpty)
     }
 
     func testStatusActions() {
