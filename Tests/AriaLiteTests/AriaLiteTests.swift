@@ -23,6 +23,8 @@ final class AppSettingsTests: XCTestCase {
     func testNormalizesRPCHost() {
         XCTAssertEqual(AppSettings.normalizedRPCHost("  "), "127.0.0.1")
         XCTAssertEqual(AppSettings.normalizedRPCHost(" 192.168.1.8 "), "192.168.1.8")
+        XCTAssertEqual(AppSettings.normalizedRPCHost("bad host"), "127.0.0.1")
+        XCTAssertEqual(AppSettings.normalizedRPCHost("https://example.com"), "127.0.0.1")
         XCTAssertTrue(AppSettings.isLocalRPCHost("127.0.0.1"))
         XCTAssertTrue(AppSettings.isLocalRPCHost("localhost"))
         XCTAssertTrue(AppSettings.isLocalRPCHost("::1"))
@@ -145,6 +147,15 @@ final class Aria2ClientTests: XCTestCase {
     func testCustomHost() {
         let client = Aria2Client(host: "192.168.1.10", port: 6801)
         XCTAssertEqual(client.endpoint.absoluteString, "http://192.168.1.10:6801/jsonrpc")
+    }
+
+    func testIPv6Hosts() {
+        XCTAssertEqual(Aria2Client(host: "::1", port: 6800).endpoint.absoluteString, "http://[::1]:6800/jsonrpc")
+        XCTAssertEqual(Aria2Client(host: "2001:db8::1", port: 6801).endpoint.absoluteString, "http://[2001:db8::1]:6801/jsonrpc")
+    }
+
+    func testInvalidHostFallsBackWithoutCrashing() {
+        XCTAssertEqual(Aria2Client(host: "bad host", port: 6800).endpoint.absoluteString, "http://127.0.0.1:6800/jsonrpc")
     }
 }
 

@@ -13,7 +13,9 @@ struct DeleteConfirmationSheet: View {
             Text(L10n.tr("这会从 AriaLite 中移除选中的任务。已下载的文件默认会保留在磁盘上。"))
                 .foregroundStyle(.secondary)
 
+            let exactTargets = store.selectedTask.map { store.deleteFileTargets(for: $0) } ?? []
             Toggle(L10n.tr("同时删除本地文件"), isOn: $deleteFiles)
+                .disabled(exactTargets.isEmpty)
 
             if deleteFiles {
                 let targets = store.selectedTask.map { store.deleteFileTargets(for: $0) } ?? []

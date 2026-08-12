@@ -203,6 +203,9 @@ final class AppStore: ObservableObject {
             engineMessage = error.localizedDescription
             connectionState = .failed
             stopPolling()
+            if settings.autoConnectEngine {
+                scheduleAutomaticEngineRecovery()
+            }
         }
     }
 
@@ -360,10 +363,18 @@ final class AppStore: ObservableObject {
     }
 
     func resetSettings() {
+        let wasRunning = connectionState == .connected || engineManager.isRunning
         setRPCSecret("", restartEngine: false)
         settings = AppSettings()
-        activeRPCHost = AppSettings.normalizedRPCHost(settings.rpcHost)
-        engineMessage = L10n.tr("设置已恢复默认值")
+        rpcPortNeedsRestart = wasRunning
+        engineMessage = wasRunning ? L10n.tr("设置已恢复默认值，正在重新连接") : L10n.tr("设置已恢复默认值")
+        if wasRunning {
+            scheduleAutomaticEngineRestart()
+        } else {
+            activeRPCHost = AppSettings.normalizedRPCHost(settings.rpcHost)
+            activeRPCPort = settings.rpcPort
+            activeRPCToken = rpcSecret
+        }
     }
 
     private func scheduleAutomaticEngineRestart() {
@@ -436,8 +447,7 @@ final class AppStore: ObservableObject {
         let rawPaths = task.localFilePaths
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
-        let fallbackPaths = rawPaths.isEmpty ? [task.savePath] : rawPaths
-        let expandedPaths = fallbackPaths
+        let expandedPaths = rawPaths
             .map { resolvedDeletePath($0, task: task) }
             .filter { !$0.isEmpty }
 
@@ -691,6 +701,7 @@ final class AppStore: ObservableObject {
     private func connectOrStartEngine(client: Aria2Client) async throws -> Aria2Version {
         let host = AppSettings.normalizedRPCHost(settings.rpcHost)
         let isLocal = AppSettings.isLocalRPCHost(host)
+        let desiredClient = Aria2Client(host: host, port: settings.rpcPort, token: rpcSecret)
 
         if engineManager.isRunning {
             if isLocal,
@@ -701,9 +712,12 @@ final class AppStore: ObservableObject {
             }
 
             engineMessage = L10n.tr("正在停止本地 aria2 引擎以应用新的 RPC 设置")
-            _ = try? await client.saveSession()
-            _ = try? await client.forceShutdown()
-            try? await waitForExternalEngineToStop(client: client)
+            if AppSettings.isLocalRPCHost(activeRPCHost ?? "127.0.0.1") {
+                let oldClient = makeClient()
+                _ = try? await oldClient.saveSession()
+                _ = try? await oldClient.forceShutdown()
+                try? await waitForExternalEngineToStop(client: oldClient)
+            }
             try? await waitForManagedEngineToStop()
             engineManager.stop()
         }
@@ -714,14 +728,14 @@ final class AppStore: ObservableObject {
 
         if !isLocal {
             engineMessage = L10n.tr("正在连接远程 aria2 RPC（\(host):\(settings.rpcPort)）")
-            return try await waitForEngine(client: makeClient(), requireManagedProcess: false)
+            return try await waitForEngine(client: desiredClient, requireManagedProcess: false)
         }
 
-        if let _ = try? await client.getVersion() {
+        if let _ = try? await desiredClient.getVersion() {
             engineMessage = L10n.tr("正在重启旧 aria2 引擎以应用新设置")
-            _ = try? await client.saveSession()
-            _ = try await client.forceShutdown()
-            try await waitForExternalEngineToStop(client: client)
+            _ = try? await desiredClient.saveSession()
+            _ = try await desiredClient.forceShutdown()
+            try await waitForExternalEngineToStop(client: desiredClient)
             try await Task.sleep(for: .seconds(1))
         } else {
             let noSecretClient = Aria2Client(host: host, port: settings.rpcPort)

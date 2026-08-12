@@ -4,8 +4,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 APP_NAME="AriaLite"
 BUNDLE_ID="${BUNDLE_ID:-com.arialite.desktop}"
-APP_VERSION="${APP_VERSION:-0.2.0}"
-BUILD_NUMBER="${BUILD_NUMBER:-7}"
+APP_VERSION="${APP_VERSION:-0.2.1}"
+BUILD_NUMBER="${BUILD_NUMBER:-8}"
 ARCH="${ARCH:-universal}"
 SIGN_IDENTITY="${SIGN_IDENTITY:--}"
 NOTARY_PROFILE="${NOTARY_PROFILE:-}"
@@ -216,7 +216,7 @@ if [[ -n "$NOTARY_PROFILE" ]]; then
 
     xcrun notarytool submit "$ZIP_PATH" --keychain-profile "$NOTARY_PROFILE" --wait
     xcrun stapler staple "$APP_DIR"
-    sign_app
+    xcrun stapler validate "$APP_DIR"
     create_zip
 fi
 

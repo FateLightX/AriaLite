@@ -82,7 +82,13 @@ struct Aria2Client {
     var token: String?
 
     init(host: String = "127.0.0.1", port: Int, token: String? = nil) {
-        endpoint = URL(string: "http://\(host):\(port)/jsonrpc")!
+        var components = URLComponents()
+        components.scheme = "http"
+        let normalizedHost = AppSettings.normalizedRPCHost(host)
+        components.host = normalizedHost.contains(":") ? "[\(normalizedHost)]" : normalizedHost
+        components.port = min(max(port, 1), 65_535)
+        components.path = "/jsonrpc"
+        endpoint = components.url ?? URL(string: "http://127.0.0.1:6800/jsonrpc")!
         self.token = token
     }
 

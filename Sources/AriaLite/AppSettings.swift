@@ -52,7 +52,14 @@ struct AppSettings: Codable {
 
     static func normalizedRPCHost(_ host: String) -> String {
         let trimmed = host.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? "127.0.0.1" : trimmed
+        guard !trimmed.isEmpty,
+              !trimmed.contains(where: { $0.isWhitespace }),
+              !trimmed.contains("://"),
+              !trimmed.contains("/"),
+              !trimmed.contains("?") else {
+            return "127.0.0.1"
+        }
+        return trimmed
     }
 
     static func isLocalRPCHost(_ host: String) -> Bool {
