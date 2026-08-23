@@ -18,6 +18,10 @@ enum LocalAppFiles {
         directory.appending(path: "aria2-next.log")
     }
 
+    static var engineHomeURL: URL {
+        directory.appending(path: "engine-home", directoryHint: .isDirectory)
+    }
+
     static var sessionURL: URL {
         directory.appending(path: "download.session")
     }
@@ -32,6 +36,7 @@ enum LocalAppFiles {
 
     static func ensureDirectory() {
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        try? FileManager.default.createDirectory(at: engineHomeURL, withIntermediateDirectories: true)
     }
 }
 
