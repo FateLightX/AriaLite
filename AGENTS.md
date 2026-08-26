@@ -27,7 +27,7 @@ Code and tests are authoritative. Do not recreate removed progress or optimizati
   uses Chinese, all other languages fall back to English
 - Bundle ID `com.arialite.desktop`
 - Main window fixed `600×400` (`.windowResizability(.contentSize)`)
-- Bundled aria2-next 2.6.0 under `Sources/AriaLite/Resources/`
+- Bundled aria2-next 2.6.2 under `Sources/AriaLite/Resources/`
 - `AppSettings.rpcHost` allows remote RPC; only local hosts start the managed engine
 - No torrent UI, history library, peer blocklist, or Dock progress
 
