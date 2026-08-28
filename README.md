@@ -18,7 +18,7 @@
 
 - 队列：添加、暂停/继续、删除、Finder 显示、复制链接
 - 顶部彩色筛选、搜索、排序；菜单栏速度
-- 内嵌 Aria2 Next 2.6.5（Apple Silicon + Intel）
+- 内嵌 Aria2 Next 2.6.7（Apple Silicon + Intel）
 - 可配置 RPC 地址 / 端口 / Secret（本机启引擎，远程只连 RPC）
 - 应用内开关自动添加或移除系统登录项
 - 固定主窗口 600×400；无 Torrent 选择、历史、Blocklist、Dock 进度
@@ -54,7 +54,7 @@ The interface follows the system language: Chinese locales use Simplified Chines
 
 - Queue: add, pause/resume, delete, Reveal in Finder, copy link
 - Colorful top filters, search, sort; menu bar speed
-- Aria2 Next 2.6.5 (Apple Silicon + Intel)
+- Aria2 Next 2.6.7 (Apple Silicon + Intel)
 - Configurable RPC host / port / secret (remote is connect-only)
 - In-app toggle for the macOS login item
 - Automatic, verified software updates with GitHub API and jsDelivr fallback

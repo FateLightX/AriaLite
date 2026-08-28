@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APP_VERSION="${APP_VERSION:-0.2.7}"
+APP_VERSION="${APP_VERSION:-0.2.8}"
 APP_DIR="$ROOT_DIR/dist/AriaLite.app"
 ZIP_PATH="$ROOT_DIR/dist/AriaLite-$APP_VERSION.zip"
 export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
@@ -22,8 +22,8 @@ lipo -info "$APP_DIR/Contents/MacOS/AriaLite"
 file \
     "$APP_DIR/Contents/Resources/motrix-next-engine-aarch64-apple-darwin" \
     "$APP_DIR/Contents/Resources/motrix-next-engine-x86_64-apple-darwin"
-printf 'a310fed464a6cf23dbd2a6384350cd0f3dff7ae868b4d0d3abed6e3ee8c8acaa  %s\n' "$APP_DIR/Contents/Resources/motrix-next-engine-aarch64-apple-darwin" | shasum -a 256 -c -
-printf '5fa31322c48eb699ab9f2a8ec0083bb13024142c60373fd741a0fb8f78b1fa8b  %s\n' "$APP_DIR/Contents/Resources/motrix-next-engine-x86_64-apple-darwin" | shasum -a 256 -c -
+printf '1f5ef0f8067f166f2c4dd2711b95f833f3244f5b7fc8998c7b011c23ddfef20c  %s\n' "$APP_DIR/Contents/Resources/motrix-next-engine-aarch64-apple-darwin" | shasum -a 256 -c -
+printf '6166d6dfd3b5609e6f390043d7a203e7048d6bc78c975bb65c69c7c93b0e4868  %s\n' "$APP_DIR/Contents/Resources/motrix-next-engine-x86_64-apple-darwin" | shasum -a 256 -c -
 test -x "$APP_DIR/Contents/Resources/motrix-next-engine-aarch64-apple-darwin"
 test -x "$APP_DIR/Contents/Resources/motrix-next-engine-x86_64-apple-darwin"
 test -f "$APP_DIR/Contents/Resources/AppIcon.icns"
