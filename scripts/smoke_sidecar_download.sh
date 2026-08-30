@@ -106,7 +106,7 @@ VERSION_RESPONSE="$(rpc "aria2.getVersion")"
 printf "%s" "$VERSION_RESPONSE" | "$PYTHON_BIN" -c '
 import json, sys
 version = json.load(sys.stdin)["result"]["version"]
-assert version == "2.6.7", version
+assert version == "2.6.8", version
 '
 
 ADD_RESPONSE="$(rpc "aria2.addUri" "[\"$URL\"],{\"dir\":\"$DOWNLOAD_DIR\"}")"
