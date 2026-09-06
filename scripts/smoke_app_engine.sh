@@ -113,7 +113,7 @@ VERSION_RESPONSE="$(rpc "aria2.getVersion" || true)"
 if ! printf "%s" "$VERSION_RESPONSE" | "$PYTHON_BIN" -c '
 import json, sys
 data = json.load(sys.stdin)
-assert data["result"]["version"] == "2.6.8", data
+assert data["result"]["version"] == "2.7.0", data
 ' 2>/dev/null; then
     echo "app-managed aria2 RPC did not become ready on 127.0.0.1:$RPC_PORT" >&2
     echo "--- app log ---" >&2
