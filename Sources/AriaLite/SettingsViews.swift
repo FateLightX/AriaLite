@@ -362,7 +362,7 @@ struct SettingsWindowView: View {
                 }
 
                 settingsRow(L10n.tr("Aria2 Next 版本"), detail: nil) {
-                    Text("2.8.6")
+                    Text("3.0.1")
                         .foregroundStyle(.secondary)
                 }
 
@@ -388,7 +388,7 @@ struct SettingsWindowView: View {
     }
 
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.2.19"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.2.20"
     }
 
     private var ariaLiteRepositoryURL: URL {
