@@ -157,6 +157,14 @@ final class Aria2ClientTests: XCTestCase {
     func testInvalidHostFallsBackWithoutCrashing() {
         XCTAssertEqual(Aria2Client(host: "bad host", port: 6800).endpoint.absoluteString, "http://127.0.0.1:6800/jsonrpc")
     }
+
+    func testReachabilityRequestBypassesCache() {
+        let request = Aria2Client.makeReachabilityRequest(
+            for: URL(string: "http://127.0.0.1:6800/jsonrpc")!
+        )
+        XCTAssertEqual(request.cachePolicy, .reloadIgnoringLocalAndRemoteCacheData)
+        XCTAssertEqual(request.timeoutInterval, 1)
+    }
 }
 
 
